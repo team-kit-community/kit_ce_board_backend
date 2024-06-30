@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.creativedesignproject.kumoh_board_backend.mapper.BoardMapper">
+    <resultMap id="boardResultMap" type="com.creativedesignproject.kumoh_board_backend.Board.entity.BoardEntity">
+        <id property="post_number" column="post_number"/>
+        <result property="title" column="title"/>
+        <result property="contents" column="contents"/>
+        <result property="write_datetime" column="write_datetime"/>
+        <result property="favorite_count" column="favorite_count"/>
+        <result property="comment_count" column="comment_count"/>
+        <result property="view_count" column="view_count"/>
+        <result property="user_id" column="user_id"/>
+        <result property="category_id" column="category_id"/>
+        <result property="writeNickname" column="writeNickname"/>
+        <collection property="images" ofType="com.creativedesignproject.kumoh_board_backend.Board.entity.ImageEntity">
+            <id property="image_id" column="image_id"/>
+            <result property="post_number" column="post_number"/>
+            <result property="image" column="image"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectBoardWithImage" resultMap="boardResultMap">
+       SELECT b.*, i.image_id, i.image, u.nickname AS writeNickname, b.favorite_count, b.comment_count
+       FROM post b
+       LEFT JOIN image i ON b.post_number = i.post_number
+       JOIN user u ON b.user_id = u.id
+       WHERE b.category_id = #{category_id} AND b.post_number = #{post_number}
+    </select>
+
+    <select id="existedBoard" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM post
+            WHERE category_id = #{category_id} AND post_number = #{post_number}
+        ) AS result
+    </select>
+
+    <update id="increaseViewCount">
+        UPDATE post
+        SET view_count = view_count + 1
+        WHERE post_number = #{post_number}
+    </update>
+
+    <insert id="registerBoard" parameterType="com.creativedesignproject.kumoh_board_backend.Board.entity.BoardEntity">
+        INSERT INTO post (title, contents, write_datetime, favorite_count, comment_count, view_count, user_id, category_id)
+        VALUES (#{title}, #{contents}, #{write_datetime}, #{favorite_count}, #{comment_count}, #{view_count}, #{user_id}, #{category_id})
+        <selectKey keyProperty="post_number" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <insert id="registerBoardImage" parameterType="java.util.List">
+        INSERT INTO image (post_number, image)
+        VALUES
+        <foreach collection="list" item="imageEntity" separator=",">
+            (#{imageEntity.post_number}, #{imageEntity.image})
+        </foreach>
+    </insert>
+
+    <select id="isOwner" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM post
+            WHERE category_id = #{category_id}
+            AND post_number = #{post_number}
+            AND user_id = (SELECT id FROM user WHERE user_id = #{userId})
+        )
+    </select>
+
+    <delete id="deleteBoard">
+        DELETE FROM post
+        WHERE category_id = #{category_id} AND post_number = #{post_number}
+    </delete>
+
+    <update id="patchBoard" parameterType="com.creativedesignproject.kumoh_board_backend.Board.entity.BoardEntity">
+        UPDATE post
+        SET title = #{title},
+            contents = #{contents}
+        WHERE post_number = #{post_number} AND category_id = #{category_id}
+    </update>
+
+    <delete id="deleteByPostNumberAndCategoryId">
+        DELETE FROM image
+        WHERE post_number = #{post_number}
+    </delete>
+
+    <resultMap id="boardListResultMap" type="com.creativedesignproject.kumoh_board_backend.Board.entity.BoardListEntity">
+        <id property="post_number" column="post_number"/>
+        <result property="title" column="title"/>
+        <result property="contents" column="contents"/>
+        <result property="titleImage" column="titleImage"/>
+        <result property="comment_count" column="comment_count"/>
+        <result property="favorite_count" column="favorite_count"/>
+        <result property="view_count" column="view_count"/>
+        <result property="category_id" column="category_id"/>
+        <result property="writeNickname" column="writeNickname"/>
+        <result property="writeDatetime" column="writeDatetime"/>
+        <result property="writeProfileImage" column="writeProfileImage"/>
+        <result property="categoryName" column="categoryName"/>
+    </resultMap>
+
+    <select id="selectLatestBoardList" resultMap="boardListResultMap">
+        SELECT
+            p.post_number,
+            p.title,
+            p.contents,
+            (SELECT i.image FROM image i WHERE i.post_number = p.post_number LIMIT 1) AS titleImage,
+            p.comment_count,
+            p.favorite_count,
+            p.view_count,
+            p.category_id,
+            u.nickname AS writeNickname,
+            p.write_datetime AS writeDatetime,
+            u.profile_image AS writeProfileImage
+        FROM
+            post p
+            JOIN user u ON p.user_id = u.id
+        WHERE
+            p.category_id = #{category_id}
+        ORDER BY
+            p.write_datetime DESC
+    </select>
+
+    <select id="selectTop3BoardList" resultMap="boardListResultMap">
+        SELECT p.post_number,
+               p.title,
+               p.contents,
+               (SELECT i.image FROM image i WHERE i.post_number = p.post_number LIMIT 1) AS titleImage,
+               p.comment_count,
+               p.favorite_count,
+               p.view_count,
+               p.category_id,
+               u.nickname AS writeNickname,
+               p.write_datetime AS writeDatetime,
+               u.profile_image AS writeProfileImage
+        FROM
+            post p
+            JOIN user u ON p.user_id = u.id
+        WHERE p.write_datetime > #{sevenDaysAgo}
+          AND p.category_id = #{category_id}
+        ORDER BY p.favorite_count DESC, p.comment_count DESC, p.view_count DESC, p.write_datetime DESC
+        LIMIT 3
+    </select>
+
+    <select id="selectSearchBoardList" resultMap="boardListResultMap">
+        SELECT p.post_number,
+               p.title,
+               p.contents,
+               (SELECT i.image FROM image i WHERE i.post_number = p.post_number LIMIT 1) AS titleImage,
+               p.comment_count,
+               p.favorite_count,
+               p.view_count,
+               p.category_id,
+               u.nickname AS writeNickname,
+               p.write_datetime AS writeDatetime,
+               u.profile_image AS writeProfileImage,
+               c.name AS categoryName
+        FROM post p
+             JOIN user u ON p.user_id = u.id
+             JOIN category c ON p.category_id = c.category_id
+        WHERE p.title LIKE CONCAT('%', #{search_word}, '%')
+           OR p.contents LIKE CONCAT('%', #{search_word}, '%')
+           OR (
+                p.title LIKE CONCAT('%', #{relation_word}, '%')
+                OR p.contents LIKE CONCAT('%', #{relation_word}, '%')
+           )
+        ORDER BY p.write_datetime DESC
+    </select>
+
+    <select id="selectUserBoardList" resultMap="boardListResultMap">
+        SELECT
+            p.post_number,
+            p.title,
+            p.contents,
+            (SELECT i.image FROM image i WHERE i.post_number = p.post_number LIMIT 1) AS titleImage,
+            p.comment_count,
+            p.favorite_count,
+            p.view_count,
+            p.category_id,
+            u.nickname AS writeNickname,
+            p.write_datetime AS writeDatetime,
+            u.profile_image AS writeProfileImage,
+            c.name AS categoryName
+        FROM
+            post p
+            JOIN user u ON p.user_id = u.id
+            JOIN category c ON p.category_id = c.category_id
+        WHERE
+            u.user_id = #{userId}
+        ORDER BY
+            p.write_datetime DESC
+    </select>
+
+    <resultMap id="categoryBoardListResultMap" type="com.creativedesignproject.kumoh_board_backend.Board.entity.CategoryBoardListEntity">
+        <result property="categoryName" column="categoryName"/>
+        <collection property="boardListEntities" ofType="com.creativedesignproject.kumoh_board_backend.Board.entity.BoardListEntity">
+            <id property="post_number" column="post_number"/>
+            <result property="title" column="title"/>
+            <result property="contents" column="contents"/>
+            <result property="titleImage" column="titleImage"/>
+            <result property="comment_count" column="comment_count"/>
+            <result property="favorite_count" column="favorite_count"/>
+            <result property="view_count" column="view_count"/>
+            <result property="category_id" column="category_id"/>
+            <result property="writeNickname" column="writeNickname"/>
+            <result property="writeDatetime" column="writeDatetime"/>
+            <result property="writeProfileImage" column="writeProfileImage"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectCategoryOfBoardList" resultMap="categoryBoardListResultMap">
+        SELECT 
+            c.name AS categoryName,
+            p.post_number,
+            p.title,
+            p.contents,
+            (SELECT i.image FROM image i WHERE i.post_number = p.post_number LIMIT 1) AS titleImage,
+            p.comment_count,
+            p.favorite_count,
+            p.view_count,
+            p.category_id,
+            u.nickname AS writeNickname,
+            p.write_datetime AS writeDatetime,
+            u.profile_image AS writeProfileImage
+        FROM 
+            category c
+            JOIN (
+                SELECT 
+                    post_number,
+                    category_id,
+                    ROW_NUMBER() OVER (PARTITION BY category_id ORDER BY write_datetime DESC) AS row_num
+                FROM post
+            ) AS ranked_posts ON c.category_id = ranked_posts.category_id AND ranked_posts.row_num &lt;= 4
+            JOIN post p ON ranked_posts.post_number = p.post_number
+            JOIN user u ON p.user_id = u.id
+        ORDER BY 
+            c.name, p.write_datetime DESC
+    </select>
+
+    <insert id="addComment">
+        INSERT INTO comment (contents, write_datetime, subcomment_id, user_id, post_number)
+        VALUES (#{contents}, #{write_datetime}, #{subcomment_id}, #{user_id}, #{post_number})
+    </insert>
+
+    <update id="save">
+        UPDATE post
+        SET title = #{title},
+            contents = #{contents},
+            write_datetime = #{write_datetime},
+            user_id = #{user_id},
+            category_id = #{category_id},
+            view_count = #{view_count},
+            favorite_count = #{favorite_count},
+            comment_count = #{comment_count}
+        WHERE post_number = #{post_number}
+    </update>
+
+    <resultMap id="commentResultMap" type="com.creativedesignproject.kumoh_board_backend.Board.entity.CommentEntity">
+        <id property="comment_id" column="comment_id"/>
+        <result property="contents" column="contents"/>
+        <result property="write_datetime" column="write_datetime"/>
+        <result property="subcomment_id" column="subcomment_id"/>
+        <result property="user_id" column="user_id"/>
+        <result property="post_number" column="post_number"/>
+        <result property="userNickname" column="userNickname"/>
+    </resultMap>
+
+    <select id="selectCommentsByPostNumber" resultMap="commentResultMap">
+        SELECT c.comment_id, c.contents, c.write_datetime, c.subcomment_id, c.user_id, c.post_number, u.nickname AS userNickname
+        FROM comment c
+        JOIN user u ON c.user_id = u.id
+        WHERE c.post_number = #{post_number}
+        ORDER BY c.write_datetime ASC
+    </select>
+
+    <select id="selectSubcommentsByCommentId" resultMap="commentResultMap">
+        SELECT c.comment_id, c.contents, c.write_datetime, c.subcomment_id, c.user_id, c.post_number, u.nickname AS userNickname
+        FROM comment c
+        JOIN user u ON c.user_id = u.id
+        WHERE c.subcomment_id = #{comment_id}
+        ORDER BY c.write_datetime ASC
+    </select>
+
+    <update id="updateFavoriteCount">
+        UPDATE post
+        SET favorite_count = #{favorite_count}
+        WHERE post_number = #{post_number}
+    </update>
+
+    <update id="updateCommentCount">
+        UPDATE post
+        SET comment_count = #{comment_count}
+        WHERE post_number = #{post_number}
+    </update>
+</mapper>
+

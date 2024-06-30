@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.creativedesignproject.kumoh_board_backend.mapper.CrawlingMapper">
+    <!-- crawlingContest -->
+    <resultMap id="CrawlingContestsResultMap" type="com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.CrawlingContestsEntity">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="date" property="date" />
+        <result column="url" property="url" />
+        <result column="detailData" property="detailData" />
+        <result column="field" property="field" />
+        <result column="host" property="host" />
+        <result column="status" property="status" />
+        <result column="views" property="views" />
+    </resultMap>
+
+    <insert id="save" parameterType="com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.CrawlingContestsEntity">
+        INSERT INTO CrawlingContestsEntity (id, title, date, url, detailData, field, host, status, views)
+        VALUES (#{id}, #{title}, #{date}, #{url}, #{detailData}, #{field}, #{host}, #{status}, #{views})
+    </insert>
+
+    <select id="existsByUrlContest" resultType="boolean">
+        SELECT COUNT(1) > 0
+        FROM CrawlingContestsEntity
+            WHERE url = #{url}
+    </select>
+
+    <delete id="deleteByRemainingDaysLessThanEqualContest">
+        DELETE FROM CrawlingContestsEntity
+        WHERE DATEDIFF(NOW(), date) >= #{remainingDaysThreshold}
+    </delete>
+
+    <!-- crawlingActivity -->
+    <resultMap id="CrawlingActivitiesResultMap" type="com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.CrawlingActivitiesEntity">
+        <!-- host 속성 제거 -->
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="date" property="date" />
+        <result column="url" property="url" />
+        <result column="detailData" property="detailData" />
+        <result column="field" property="field" />
+        <result column="image" property="image" />
+    </resultMap>
+
+    <insert id="saveActivity" parameterType="com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.CrawlingActivitiesEntity">
+        INSERT INTO CrawlingActivitesEntity (id, title, date, url, detailData, field, image)
+        VALUES (#{id}, #{title}, #{date}, #{url}, #{detailData}, #{field}, #{image})
+    </insert>
+
+    <select id="existsByUrlActivity" resultType="boolean">
+        SELECT COUNT(1) > 0
+        FROM CrawlingActivitesEntity
+        WHERE url = #{url}
+    </select>
+
+    <delete id="deleteByRemainingDaysLessThanEqualActivity" parameterType="int">
+        DELETE FROM CrawlingActivitesEntity
+        WHERE DATEDIFF(NOW(), date) >= #{remainingDaysThreshold}
+    </delete>
+
+    <!-- linkcareerContest -->
+    <resultMap id="LinkCareerContestsResultMap" type="com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.LinkCareerContestsEntity">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="date" property="date" />
+        <result column="url" property="url" />
+        <result column="detailData" property="detailData" />
+        <result column="image" property="image" />
+        <result column="host" property="host" />
+        <result column="views" property="views" />
+        <result column="comments" property="comments" />
+    </resultMap>
+
+    <select id="findAllLinkCareerContestUrls" resultType="string">
+        SELECT url FROM LinkCareerContestsEntity
+    </select>
+
+    <select id="findByUrlLinkCareerContest" parameterType="string" resultMap="LinkCareerContestsResultMap">
+        SELECT * FROM LinkCareerContestsEntity WHERE url = #{url}
+    </select>
+
+    <insert id="saveLinkCareerContest" parameterType="com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.LinkCareerContestsEntity">
+        INSERT INTO LinkCareerContestsEntity (id, title, date, url, detailData, image, host, views, comments)
+        VALUES (#{id}, #{title}, #{date}, #{url}, #{detailData}, #{image}, #{host}, #{views}, #{comments}) ON DUPLICATE KEY UPDATE
+            title = VALUES(title),
+            image = VALUES(image),
+            host = VALUES(host),
+            date = VALUES(date),
+            detailData = VALUES(detailData)
+    </insert>
+
+    <insert id="saveAllLinkCareerContests" parameterType="map">
+        INSERT INTO LinkCareerContestsEntity (id, title, date, url, detailData, image, host, views, comments)
+        VALUES 
+        <foreach collection="entitiesToUpdate" item="contest" separator=",">
+            (#{contest.id}, #{contest.title}, #{contest.date}, #{contest.url}, #{contest.detailData}, #{contest.image}, #{contest.host}, #{contest.views}, #{contest.comments})
+        </foreach>
+        ON DUPLICATE KEY UPDATE 
+            title = VALUES(title),
+            image = VALUES(image),
+            host = VALUES(host),
+            date = VALUES(date),
+            detailData = VALUES(detailData)
+    </insert>
+
+    <!-- linkcareerActivity -->
+    <insert id="saveAllLinkCareerActivities" parameterType="map">
+        INSERT INTO LinkCareerActivitiesEntity (id, title, date, url, detailData, image, host, views, comments)
+        VALUES 
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id}, #{entity.title}, #{entity.date}, #{entity.url}, #{entity.detailData}, #{entity.image}, #{entity.host}, #{entity.views}, #{entity.comments})
+        </foreach>
+        ON DUPLICATE KEY UPDATE 
+            title = VALUES(title),
+            image = VALUES(image),
+            host = VALUES(host),
+            date = VALUES(date),
+            detailData = VALUES(detailData)
+    </insert>
+
+    <select id="findByUrlLinkCareerActivity" resultType="com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.LinkCareerActivitiesEntity">
+        SELECT * FROM LinkCareerActivitiesEntity WHERE url = #{url}
+    </select>
+
+    <insert id="saveLinkCareerActivity">
+        INSERT INTO LinkCareerActivitiesEntity (id, title, url, image, host, date, detailData, views, comments)
+        VALUES (#{entities.id}, #{entities.title}, #{entities.url}, #{entities.image}, #{entities.host}, #{entities.date}, #{entities.detailData}, #{entities.views}, #{entities.comments})
+    </insert>
+
+    <select id="findAllLinkCareerActivitiesUrls" resultType="string">
+        SELECT url FROM LinkCareerActivitiesEntity
+    </select>
+
+    <select id="findAllWevityContests" resultType="com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.CrawlingContestsEntity">
+        SELECT 
+            id, 
+            title, 
+            date, 
+            url, 
+            detailData, 
+            field, 
+            host, 
+            status, 
+            views 
+        FROM 
+            CrawlingContestsEntity
+    </select>
+
+    <select id="findAllWevityActivities" resultType="com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.CrawlingActivitiesEntity">
+        SELECT 
+            id, 
+            title, 
+            date, 
+            url, 
+            detailData, 
+            field, 
+            image 
+        FROM 
+            CrawlingActivitesEntity
+    </select>
+
+    <select id="findAllLinkCareerContests" resultType="com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.LinkCareerContestsEntity">
+        SELECT 
+            id, 
+            title, 
+            date, 
+            url, 
+            detailData, 
+            image, 
+            host, 
+            views, 
+            comments 
+        FROM 
+            LinkCareerContestsEntity
+    </select>
+
+    <select id="findAllLinkCareerActivities" resultType="com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.LinkCareerActivitiesEntity">
+        SELECT 
+            id, 
+            title, 
+            date, 
+            url, 
+            detailData, 
+            image, 
+            host, 
+            views, 
+            comments
+        FROM 
+            LinkCareerActivitiesEntity
+    </select>
+
+    <select id="findWevityContestById" parameterType="int" resultType="com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.CrawlingContestsEntity">
+        SELECT 
+            id, 
+            title, 
+            date, 
+            url, 
+            detailData, 
+            field, 
+            host, 
+            status, 
+            views 
+        FROM 
+            CrawlingContestsEntity
+        WHERE 
+            id = #{post_number}
+    </select>
+
+    <select id="findWevityActivityById" parameterType="int" resultType="com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.CrawlingActivitiesEntity">
+        SELECT 
+            id, 
+            title, 
+            date, 
+            url, 
+            detailData, 
+            field, 
+            image 
+        FROM 
+            CrawlingActivitesEntity
+        WHERE 
+            id = #{post_number}
+    </select>
+
+    <select id="findLinkCareerContestById" parameterType="int" resultType="com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.LinkCareerContestsEntity">
+        SELECT 
+            id, 
+            title, 
+            date, 
+            url, 
+            detailData, 
+            image, 
+            host, 
+            views, 
+            comments 
+        FROM 
+            LinkCareerContestsEntity
+        WHERE 
+            id = #{post_number}
+    </select>
+
+    <select id="findLinkCareerActivityById" parameterType="int" resultType="com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.LinkCareerActivitiesEntity">
+        SELECT 
+            id, 
+            title, 
+            date, 
+            url, 
+            detailData, 
+            image, 
+            host, 
+            views, 
+            comments 
+        FROM 
+            LinkCareerActivitiesEntity
+        WHERE 
+            id = #{post_number}
+    </select>
+</mapper>
+

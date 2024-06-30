@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.creativedesignproject.kumoh_board_backend.mapper.CategoryMapper">
+    <resultMap id="categoryResultMap" type="com.creativedesignproject.kumoh_board_backend.Category.entity.CategoryEntity">
+        <id property="category_id" column="category_id"/>
+        <result property="name" column="name"/>
+    </resultMap>
+
+    <insert id="CategorySave" parameterType="com.creativedesignproject.kumoh_board_backend.Category.entity.CategoryEntity">
+        INSERT INTO category (name)
+        VALUES (#{name})
+    </insert>
+
+    <update id="updateCategory">
+        UPDATE category
+        SET name = #{categoryName}
+        WHERE category_id = #{category_id}
+    </update>
+
+    <delete id="deleteCategory">
+        DELETE FROM category
+        WHERE category_id = #{category_id}
+    </delete>
+
+    <select id="existedByCategoryName" resultType="boolean">
+        SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END
+        FROM category
+        WHERE name = #{categoryName}
+    </select>
+
+    <select id="findByCategoryId" resultType="com.creativedesignproject.kumoh_board_backend.Category.entity.CategoryEntity">
+        SELECT category_id, name
+        FROM category
+        WHERE category_id = #{category_id}
+    </select>
+
+    <select id="findByCategoriesAll" resultMap="categoryResultMap">
+        SELECT category_id, name
+        FROM category
+    </select>
+
+    <select id="existedByCategoryId" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM category
+            WHERE category_id = #{category_id}
+        )
+    </select>
+
+</mapper>

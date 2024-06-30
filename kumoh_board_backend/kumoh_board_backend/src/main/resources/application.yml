@@ -1,0 +1,51 @@
+#server port
+server:
+    port: 4000
+
+#mysql 설정
+spring:
+    datasource:
+        jdbc-url: jdbc:mysql://localhost:3306/kcs_board?serverTimezone=UTC&characterEncoding=UTF-8
+        username: root
+        password: 1234
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    #GMail 인증 설정
+    mail:
+        host: smtp.gmail.com
+        port: 587
+        username: kanghada3333@gmail.com
+        password: keih onyg bpsl zmxd
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+    # 파일 업로드 설정
+    servlet:
+        multipart:
+            max-file-size: 100MB
+            max-request-size: 110MB
+
+mybatis:
+    mapper-locations: classpath:/mappers/*.xml
+    configuration:
+        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+    level:
+        root: INFO
+        org.mybatis: DEBUG
+        org.apache.ibatis: DEBUG
+        com.creativedesignproject.kumoh_board_backend: DEBUG
+
+#JWT Secret Key 설정
+secret:
+    key: a8a16408bc2e11b6b74797dbd0837948b1267d5de209df9aaab670be16343b3d5faaf94c17c7e957aca3d5f691dca32ba4dddcb053bc44fd2de2bfc593e19cc4
+
+#Redis 설정
+
+#file upload path
+file:
+    path: C://Users//samsung//Desktop//kumoh_board_backend//kumoh_board_backend//fileUpload
+    url: http://localhost:4000/file/
