@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.creativedesignproject.kumoh_board_backend.mapper.SearchMapper">
+    <insert id="searchLogSave" parameterType="com.creativedesignproject.kumoh_board_backend.Search.entity.SearchEntity">
+        INSERT INTO search_log (search_word, relation_word, relation)
+        VALUES (#{search_word}, #{relation_word}, #{relation})
+    </insert>
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.creativedesignproject.kumoh_board_backend.mapper.UserMapper">
+    <resultMap id="userEntityMap" type="com.creativedesignproject.kumoh_board_backend.Auth.entity.UserEntity">
+        <result property="nickname" column="nickname"/>
+        <result property="user_id" column="user_id"/>
+        <result property="password" column="password"/>
+        <result property="email" column="email"/>
+        <result property="isAdmin" column="isAdmin"/>
+        <result property="role" column="role"/>
+        <result property="createdAt" column="createdAt"/>
+        <result property="updatedAt" column="updatedAt"/>
+        <result property="profile_image" column="profile_image"/>
+    </resultMap>
+
+    <select id="findByUserId" resultMap="userEntityMap">
+        SELECT nickname, user_id, password, email, isAdmin, role, createdAt, updatedAt, profile_image
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
+    
+</mapper>

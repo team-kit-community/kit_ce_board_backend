@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.creativedesignproject.kumoh_board_backend.mapper.AuthMapper">
+    <resultMap id="userEntityMap" type="com.creativedesignproject.kumoh_board_backend.Auth.entity.UserEntity">
+        <result property="nickname" column="nickname"/>
+        <result property="user_id" column="user_id"/>
+        <result property="password" column="password"/>
+        <result property="email" column="email"/>
+        <result property="isAdmin" column="isAdmin"/>
+        <result property="role" column="role"/>
+        <result property="createdAt" column="createdAt"/>
+        <result property="updatedAt" column="updatedAt"/>
+        <result property="profile_image" column="profile_image"/>
+    </resultMap>
+
+    <resultMap id="certificationEntityMap" type="com.creativedesignproject.kumoh_board_backend.Auth.entity.CertificationEntity">
+        <result property="certification_number" column="certification_number"/>
+        <result property="certification_email" column="certification_email"/>
+    </resultMap>
+
+    <select id="existsByUserNickname" resultType="boolean">
+        SELECT EXISTS(SELECT 1 FROM user WHERE nickname = #{nickName})
+    </select>
+
+    <select id="existsByUserId" resultType="boolean">
+        SELECT EXISTS(SELECT 1 FROM user WHERE user_id = #{userId})
+    </select>
+
+    <select id="existsByUserEmail" resultType="boolean">
+        SELECT EXISTS(SELECT 1 FROM user WHERE email = #{email})
+    </select>
+
+    <insert id="certificationSave" parameterType="com.creativedesignproject.kumoh_board_backend.Auth.entity.CertificationEntity">
+        INSERT INTO certification (certification_number, certification_email)
+        VALUES (#{certification_number}, #{certification_email})
+    </insert>
+
+    <select id="findByUserEmail" resultMap="certificationEntityMap">
+        SELECT certification_number, certification_email
+        FROM certification
+        WHERE certification_email = #{email}
+    </select>
+
+    <insert id="UserSave" parameterType="com.creativedesignproject.kumoh_board_backend.Auth.entity.UserEntity">
+        INSERT INTO user (nickname, user_id, password, email, isAdmin, role, createdAt, updatedAt, profile_image)
+        VALUES (#{nickname}, #{user_id}, #{password}, #{email}, #{isAdmin}, #{role}, #{createdAt}, #{updatedAt}, #{profile_image})
+    </insert>
+
+    <delete id="deleteByCertificationUserEmail">
+        DELETE FROM certification
+        WHERE certification_email = #{email}
+    </delete>
+
+    <select id="findByUserId" resultMap="userEntityMap">
+        SELECT id, nickname, user_id, password, email, isAdmin, role, createdAt, updatedAt, profile_image
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
+    <resultMap id="userEntityMapping" type="com.creativedesignproject.kumoh_board_backend.Auth.entity.UserEntity">
+        <id property="id" column="id"/>
+        <result property="user_id" column="user_id"/>
+        <result property="password" column="password"/>
+        <result property="nickname" column="nickname"/>
+        <result property="email" column="email"/>
+        <result property="isAdmin" column="isAdmin"/>
+        <result property="role" column="role"/>
+        <result property="createdAt" column="createdAt"/>
+        <result property="updatedAt" column="updatedAt"/>
+        <result property="profile_image" column="profile_image"/>
+    </resultMap>
+
+    <select id="findUserId" resultMap="userEntityMapping">
+        SELECT id, user_id, password, nickname, email, isAdmin, role, createdAt, updatedAt, profile_image
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
+    <update id="updateUser">
+        UPDATE user
+        SET password = #{password},
+            nickname = #{nickname},
+            email = #{email},
+            isAdmin = #{isAdmin},
+            role = #{role},
+            createdAt = #{createdAt},
+            updatedAt = #{updatedAt},
+            profile_image = #{profile_image}
+        WHERE user_id = #{user_id}
+    </update>
+</mapper>
