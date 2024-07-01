@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ResponseDto;
 import com.creativedesignproject.kumoh_board_backend.Board.dto.object.FavoriteListItem;
-import com.creativedesignproject.kumoh_board_backend.Board.resultSet.GetFavoriteListResultSet;
+import com.creativedesignproject.kumoh_board_backend.Board.repository.query.FavoriteListDto;
 import com.creativedesignproject.kumoh_board_backend.Common.ResponseCode;
 import com.creativedesignproject.kumoh_board_backend.Common.ResponseMessage;
 
@@ -17,12 +17,12 @@ import lombok.Getter;
 public class GetFavoriteListResponseDto extends ResponseDto {
     private List<FavoriteListItem> favoriteList;
     
-    private GetFavoriteListResponseDto(List<GetFavoriteListResultSet> resultSets) {
+    private GetFavoriteListResponseDto(List<FavoriteListDto> resultSets) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
         this.favoriteList = FavoriteListItem.copyList(resultSets);
     }
     
-    public static ResponseEntity<GetFavoriteListResponseDto> success(List<GetFavoriteListResultSet> resultSets) {
+    public static ResponseEntity<GetFavoriteListResponseDto> success(List<FavoriteListDto> resultSets) {
         return ResponseEntity.status(HttpStatus.OK).body(new GetFavoriteListResponseDto(resultSets));
     }
     

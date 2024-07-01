@@ -6,20 +6,20 @@ import org.springframework.http.ResponseEntity;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ResponseDto;
 import com.creativedesignproject.kumoh_board_backend.Common.ResponseCode;
 import com.creativedesignproject.kumoh_board_backend.Common.ResponseMessage;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.CrawlingPostEntity;
+import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.CrawlingPostDto;
 
 import lombok.Getter;
 
 @Getter
 public class GetCrawlingDetailBoardResponseDto extends ResponseDto {
-    private CrawlingPostEntity crawlingEntity;
+    private CrawlingPostDto crawling;
 
-    private GetCrawlingDetailBoardResponseDto(CrawlingPostEntity crawlingEntity) {
+    private GetCrawlingDetailBoardResponseDto(CrawlingPostDto crawling) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-        this.crawlingEntity = crawlingEntity;
+        this.crawling = crawling;
     }
 
-    public static ResponseEntity<GetCrawlingDetailBoardResponseDto> success(CrawlingPostEntity crawlingEntity) {
+    public static ResponseEntity<GetCrawlingDetailBoardResponseDto> success(CrawlingPostDto crawlingEntity) {
         return ResponseEntity.status(HttpStatus.OK).body(new GetCrawlingDetailBoardResponseDto(crawlingEntity));
     }
 }

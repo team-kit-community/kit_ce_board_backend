@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Board.entity.CategoryBoardListEntity;
+import com.creativedesignproject.kumoh_board_backend.Board.repository.query.CategoryPostDto;
 import com.creativedesignproject.kumoh_board_backend.Common.ResponseCode;
 import com.creativedesignproject.kumoh_board_backend.Common.ResponseMessage;
 
@@ -14,15 +14,15 @@ import lombok.Getter;
 
 @Getter
 public class GetCategoryOfBoardListResponseDto extends ResponseDto{
-    List<CategoryBoardListEntity> categoryOfBoardList = null;
+    List<CategoryPostDto> postList = null;
 
-    private GetCategoryOfBoardListResponseDto(List<CategoryBoardListEntity> boardListEntities) {
+    private GetCategoryOfBoardListResponseDto(List<CategoryPostDto> postList) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-        this.categoryOfBoardList = boardListEntities;
+        this.postList = postList;
     }
 
-    public static ResponseEntity<GetCategoryOfBoardListResponseDto> success(List<CategoryBoardListEntity> boardListEntities) {
-        GetCategoryOfBoardListResponseDto responseBody = new GetCategoryOfBoardListResponseDto(boardListEntities);
+    public static ResponseEntity<GetCategoryOfBoardListResponseDto> success(List<CategoryPostDto> postList) {
+        GetCategoryOfBoardListResponseDto responseBody = new GetCategoryOfBoardListResponseDto(postList);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 

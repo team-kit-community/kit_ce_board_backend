@@ -1,6 +1,6 @@
 package com.creativedesignproject.kumoh_board_backend.Board.dto.object;
 
-import com.creativedesignproject.kumoh_board_backend.Board.resultSet.GetFavoriteListResultSet;
+import com.creativedesignproject.kumoh_board_backend.Board.repository.query.FavoriteListDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,13 +16,13 @@ import java.util.List;
 public class FavoriteListItem {
     private String userId;
 
-    public FavoriteListItem(GetFavoriteListResultSet resultSet) {
+    public FavoriteListItem(FavoriteListDto resultSet) {
         this.userId = resultSet.getUserId();
     }
 
-    public static List<FavoriteListItem> copyList(List<GetFavoriteListResultSet> resultSets) {
+    public static List<FavoriteListItem> copyList(List<FavoriteListDto> resultSets) {
         List<FavoriteListItem> list = new ArrayList<>();
-        for(GetFavoriteListResultSet resultSet : resultSets) {
+        for(FavoriteListDto resultSet : resultSets) {
             list.add(new FavoriteListItem(resultSet));
         }
         return list;

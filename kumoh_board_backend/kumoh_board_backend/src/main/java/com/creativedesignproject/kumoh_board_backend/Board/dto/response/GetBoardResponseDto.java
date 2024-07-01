@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Board.entity.BoardEntity;
+import com.creativedesignproject.kumoh_board_backend.Board.entity.Post;
 import com.creativedesignproject.kumoh_board_backend.Common.ResponseCode;
 import com.creativedesignproject.kumoh_board_backend.Common.ResponseMessage;
 
@@ -12,15 +12,15 @@ import lombok.Getter;
 
 @Getter
 public class GetBoardResponseDto extends ResponseDto {
-    BoardEntity boardEntity = null;
+    Post post = null;
 
-    private GetBoardResponseDto(BoardEntity boardEntity) {
+    private GetBoardResponseDto(Post post) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-        this.boardEntity = boardEntity;
+        this.post = post;
     }
 
-    public static ResponseEntity<GetBoardResponseDto> success(BoardEntity boardEntity) {
-        GetBoardResponseDto responseBody = new GetBoardResponseDto(boardEntity);
+    public static ResponseEntity<GetBoardResponseDto> success(Post post) {
+        GetBoardResponseDto responseBody = new GetBoardResponseDto(post);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 

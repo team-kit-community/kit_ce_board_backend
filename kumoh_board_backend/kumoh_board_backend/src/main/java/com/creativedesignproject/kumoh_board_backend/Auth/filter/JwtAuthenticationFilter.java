@@ -14,9 +14,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.entity.UserEntity;
+import com.creativedesignproject.kumoh_board_backend.Auth.entity.User;
 import com.creativedesignproject.kumoh_board_backend.Auth.provider.JwtProvider;
-import com.creativedesignproject.kumoh_board_backend.mapper.AuthMapper;
+import com.creativedesignproject.kumoh_board_backend.Auth.repository.UserRepository;
 
 import org.springframework.util.StringUtils;
 
@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
-    private final AuthMapper authMapper;
+    private final UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -48,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            UserEntity userEntity = authMapper.findByUserId(userId);
+            User userEntity = userRepository.findByUserId(userId);
             String role = userEntity.getRole(); // role : ROLE_USER, ROLE_ADMIN // 역할을 부여할 경우에는 접두사 ROLE_를 꼭 붙여줘야된다.
 
             //ROLE_DEVLEOPER, ROLE_ADMIN, ROLE_USER

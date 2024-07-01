@@ -14,6 +14,7 @@ public interface ResponseMessage {
     String NOT_EXISTED_BOARD = "Not Existed Board.";
     String NOT_EXISTED_USER = "Not Existed User.";
     String NOT_EXISTED_CATEGORY = "Not Existed Category.";
+    String NOT_EXISTED_COMMENT = "Not Existed Comment.";
 
     //http 401
     String SIGN_IN_FAIL = "Login information mismatch.";

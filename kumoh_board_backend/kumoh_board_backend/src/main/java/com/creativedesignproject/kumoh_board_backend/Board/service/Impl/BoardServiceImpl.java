@@ -1,12 +1,12 @@
 package com.creativedesignproject.kumoh_board_backend.Board.service.Impl;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.entity.UserEntity;
+import com.creativedesignproject.kumoh_board_backend.Auth.entity.User;
+import com.creativedesignproject.kumoh_board_backend.Auth.repository.UserRepository;
 import com.creativedesignproject.kumoh_board_backend.Board.dto.request.PatchBoardRequestDto;
 import com.creativedesignproject.kumoh_board_backend.Board.dto.request.PostBoardRequestDto;
 import com.creativedesignproject.kumoh_board_backend.Board.dto.request.PostCommentRequestDto;
@@ -24,56 +24,59 @@ import com.creativedesignproject.kumoh_board_backend.Board.dto.response.PatchBoa
 import com.creativedesignproject.kumoh_board_backend.Board.dto.response.PostBoardResponseDto;
 import com.creativedesignproject.kumoh_board_backend.Board.dto.response.PostCommentResponseDto;
 import com.creativedesignproject.kumoh_board_backend.Board.dto.response.PutFavoriteResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Board.entity.BoardEntity;
-import com.creativedesignproject.kumoh_board_backend.Board.entity.BoardListEntity;
-import com.creativedesignproject.kumoh_board_backend.Board.entity.CategoryBoardListEntity;
-import com.creativedesignproject.kumoh_board_backend.Board.entity.CommentEntity;
-import com.creativedesignproject.kumoh_board_backend.Board.entity.FavoriteEntity;
-import com.creativedesignproject.kumoh_board_backend.Board.entity.ImageEntity;
-import com.creativedesignproject.kumoh_board_backend.Board.entity.primary.FavoritePk;
-import com.creativedesignproject.kumoh_board_backend.Board.resultSet.GetFavoriteListResultSet;
+import com.creativedesignproject.kumoh_board_backend.Board.entity.Comment;
+import com.creativedesignproject.kumoh_board_backend.Board.entity.Favorite;
+import com.creativedesignproject.kumoh_board_backend.Board.entity.Image;
+import com.creativedesignproject.kumoh_board_backend.Board.entity.Post;
+import com.creativedesignproject.kumoh_board_backend.Board.entity.SubComment;
+import com.creativedesignproject.kumoh_board_backend.Board.repository.CommentRepository;
+import com.creativedesignproject.kumoh_board_backend.Board.repository.FavoriteRepository;
+import com.creativedesignproject.kumoh_board_backend.Board.repository.ImageRepository;
+import com.creativedesignproject.kumoh_board_backend.Board.repository.PostRepository;
+import com.creativedesignproject.kumoh_board_backend.Board.repository.SubCommentRepository;
+import com.creativedesignproject.kumoh_board_backend.Board.repository.query.CategoryPostDto;
+import com.creativedesignproject.kumoh_board_backend.Board.repository.query.FavoriteListDto;
+import com.creativedesignproject.kumoh_board_backend.Board.repository.query.PostDto;
 import com.creativedesignproject.kumoh_board_backend.Board.service.BoardService;
-import com.creativedesignproject.kumoh_board_backend.Search.entity.SearchEntity;
-import com.creativedesignproject.kumoh_board_backend.mapper.AuthMapper;
-import com.creativedesignproject.kumoh_board_backend.mapper.BoardMapper;
-import com.creativedesignproject.kumoh_board_backend.mapper.CategoryMapper;
-import com.creativedesignproject.kumoh_board_backend.mapper.FavoriteMapper;
-import com.creativedesignproject.kumoh_board_backend.mapper.SearchMapper;
+import com.creativedesignproject.kumoh_board_backend.Category.entity.Category;
+import com.creativedesignproject.kumoh_board_backend.Category.repository.CategoryRepository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 
 @Service
 @RequiredArgsConstructor
-@Log4j2
+@Transactional(readOnly = true)
 public class BoardServiceImpl implements BoardService{
-    private final BoardMapper boardMapper;
-    private final CategoryMapper categoryMapper;
-    private final AuthMapper userMapper;
-    private final SearchMapper searchMapper;
-    private final FavoriteMapper favoriteMapper;
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
+    private final FavoriteRepository favoriteRepository;
+    private final ImageRepository imageRepository;
+    private final CommentRepository commentRepository;
+    private final SubCommentRepository subCommentRepository;
+    private final CategoryRepository categoryRepository;
 
     @Transactional
     @Override
-    public ResponseEntity<? super GetBoardResponseDto> getBoard(Integer category_id, Integer post_number) {
+    public ResponseEntity<? super GetBoardResponseDto> getBoard(Long category_id, Long post_number) {
         try {
-            boolean isExisted = categoryMapper.existedByCategoryId(category_id);
+            boolean isExisted = categoryRepository.existsById(category_id);
             if(!isExisted) return GetBoardResponseDto.notExistedCategory();
 
-            boolean isExistedBoard = boardMapper.existedBoard(category_id, post_number);
+            boolean isExistedBoard = postRepository.existsByCategoryIdAndPostNumber(category_id, post_number);
             if(!isExistedBoard) return GetBoardResponseDto.notExistedBoard();
             
-            boardMapper.increaseViewCount(post_number);
-            BoardEntity boardEntity = boardMapper.selectBoardWithImage(category_id, post_number);
+            Post post = postRepository.selectBoardWithImage(category_id, post_number);
+            post.increaseViewCount();
             
-            return GetBoardResponseDto.success(boardEntity);
+            return GetBoardResponseDto.success(post);
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
@@ -82,22 +85,24 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional
     @Override
-    public ResponseEntity<? super PostBoardResponseDto> registerBoard(PostBoardRequestDto dto, Integer category_id, String userId) {
+    public ResponseEntity<? super PostBoardResponseDto> registerBoard(PostBoardRequestDto dto, Long category_id, String userId) {
         try {
-            UserEntity user = userMapper.findUserId(userId)
-                    .orElseThrow(()-> new UsernameNotFoundException("User not found"));
+            User user = userRepository.findByUserId(userId);
+            if(user == null) return PostBoardResponseDto.notExistUser();
 
-            BoardEntity boardEntity = BoardEntity.builder()
+            Category category = categoryRepository.findById(category_id);
+            if(category == null) return PostBoardResponseDto.notExistCategory();
+
+            Post post = Post.builder()
                     .title(dto.getTitle())
                     .contents(dto.getContent())
-                    .write_datetime(new Date())
-                    .user_id(user.getId())
-                    .category_id(category_id)
+                    .user(user)
+                    .category(category)
                     .build();
-            boardMapper.registerBoard(boardEntity);
+            postRepository.save(post);
 
             // 이미지 저장
-            ImageSave(boardEntity.getPost_number(), dto.getBoardImageList());
+            ImageSave(post.getId(), dto.getBoardImageList());
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
@@ -108,18 +113,18 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional
     @Override
-    public ResponseEntity<? super DeleteBoardResponseDto> deleteBoard(Integer category_id, Integer post_number,String userId) {
+    public ResponseEntity<? super DeleteBoardResponseDto> deleteBoard(Long category_id, Long post_number,String userId) {
         try {
-            boolean isExisted = userMapper.existsByUserId(userId);
+            boolean isExisted = userRepository.existsByUserId(userId);
             if(!isExisted) return DeleteBoardResponseDto.notExistUser();
 
-            boolean isExistedBoard = boardMapper.existedBoard(category_id, post_number);
-            if(!isExistedBoard) return DeleteBoardResponseDto.notExistedBoard();
+            boolean isExistedPost = postRepository.existsByCategoryIdAndPostNumber(category_id, post_number);
+            if(!isExistedPost) return DeleteBoardResponseDto.notExistedBoard();
 
-            boolean isOwner = boardMapper.isOwner(category_id, post_number, userId);
+            boolean isOwner = postRepository.isOwner(category_id, post_number, userId);
             if(!isOwner) return DeleteBoardResponseDto.noPermission();
 
-            boardMapper.deleteBoard(category_id, post_number);
+            postRepository.deleteByPostNumberAndCategoryId(post_number, category_id);
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
@@ -130,27 +135,27 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional
     @Override
-    public ResponseEntity<? super PatchBoardResponseDto> patchBoard(Integer category_id, Integer post_number, String userId, PatchBoardRequestDto dto) {
+    public ResponseEntity<? super PatchBoardResponseDto> patchBoard(Long category_id, Long post_number, String userId, PatchBoardRequestDto dto) {
         try {
-            boolean isExisted = userMapper.existsByUserId(userId);
-            if (!isExisted) return PatchBoardResponseDto.notExistUser();
+            User user = userRepository.findByUserId(userId);
+            if(user == null) return PatchBoardResponseDto.notExistUser();
 
-            boolean isExistedBoard = boardMapper.existedBoard(category_id, post_number);
-            if (!isExistedBoard) return PatchBoardResponseDto.notExistBoard();
+            Category category = categoryRepository.findById(category_id);
+            if(category == null) return PatchBoardResponseDto.notExistedCategory();
 
-            boolean isOwner = boardMapper.isOwner(category_id, post_number, userId);
+            boolean isOwner = postRepository.isOwner(category_id, post_number, userId);
             if (!isOwner) return PatchBoardResponseDto.noPermission();
 
-            BoardEntity boardEntity = BoardEntity.builder()
+            Post post = Post.builder()
                     .title(dto.getTitle())
                     .contents(dto.getContent())
-                    .post_number(post_number)
-                    .category_id(category_id)
+                    .user(user)
+                    .category(category)
                     .build();
-            boardMapper.patchBoard(boardEntity);
+            postRepository.save(post);
             
-            boardMapper.deleteByPostNumberAndCategoryId(post_number, category_id);
-            ImageSave(post_number, dto.getBoardImageList());
+            postRepository.deleteByPostNumberAndCategoryId(post_number, category_id);
+            ImageSave(post.getId(), dto.getBoardImageList());
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
@@ -159,25 +164,27 @@ public class BoardServiceImpl implements BoardService{
         return PatchBoardResponseDto.success();
     }
 
-    private void ImageSave(Integer post_number, List<String> boardImageList) {
+    private void ImageSave(Long post_number, List<String> boardImageList) {
         if (boardImageList != null && !boardImageList.isEmpty()) {
-            List<ImageEntity> imageEntities = new ArrayList<>();
-            for (String image : boardImageList) {
-                ImageEntity imageEntity = ImageEntity.builder()
-                        .post_number(post_number)
-                        .image(image)
+            Post post = postRepository.findById(post_number);
+
+            List<Image> imageEntities = new ArrayList<>();
+            for (String url : boardImageList) {
+                Image image = Image.builder()
+                        .post(post)
+                        .url(url)
                         .build();
-                imageEntities.add(imageEntity);
+                imageEntities.add(image);
             }
-            boardMapper.registerBoardImage(imageEntities);
+            imageRepository.saveAll(imageEntities);
         }
     }
 
     @Override
-    public ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList(Integer category_id) {
+    public ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList(Long category_id) {
         try {
-            List<BoardListEntity> boardListEntities = boardMapper.selectLatestBoardList(category_id);
-            return GetLatestBoardListResponseDto.success(boardListEntities);
+            List<PostDto> postList = postRepository.selectLatestBoardList(category_id);
+            return GetLatestBoardListResponseDto.success(postList);
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
@@ -185,14 +192,14 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList(Integer category_id) {
+    public ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList(Long category_id) {
         try {
-            List<BoardListEntity> boardListEntities = new ArrayList<>();
+            List<PostDto> postList = postRepository.selectTop3BoardList(category_id);
             Date beforeWeek = Date.from(Instant.now().minus(7, ChronoUnit.DAYS));
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String sevenDaysAgo = sdf.format(beforeWeek);
-            boardListEntities = boardMapper.selectTop3BoardList(sevenDaysAgo, category_id);
-            return GetTop3BoardListResponseDto.success(boardListEntities);
+            postList = postRepository.selectTop3BoardList(sevenDaysAgo, category_id);
+            return GetTop3BoardListResponseDto.success(postList);
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
@@ -202,26 +209,8 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(String search_word, String relation_word) {
         try {
-            List<BoardListEntity> boardListEntities = new ArrayList<>();
-            boardListEntities = boardMapper.selectSearchBoardList(search_word, relation_word);
-
-            SearchEntity searchEntity = SearchEntity.builder()
-                    .search_word(search_word)
-                    .relation_word(relation_word)
-                    .relation(false)
-                    .build();
-            searchMapper.searchLogSave(searchEntity);
-            boolean relation = relation_word != null;
-
-            if (relation) {
-                searchEntity = SearchEntity.builder()
-                        .search_word(relation_word)
-                        .relation_word(search_word)
-                        .relation(relation)
-                        .build();
-                searchMapper.searchLogSave(searchEntity);
-            }
-            return GetSearchBoardListResponseDto.success(boardListEntities);
+            List<PostDto> postList = postRepository.selectSearchBoardList(search_word, relation_word);
+            return GetSearchBoardListResponseDto.success(postList);
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
@@ -230,25 +219,32 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(String userId) {
-        List<BoardListEntity> boardListEntities = new ArrayList<>();
+        List<PostDto> postList = new ArrayList<>();
 
         try {
-            boolean existedUser = userMapper.existsByUserId(userId);
+            boolean existedUser = userRepository.existsByUserId(userId);
             if (!existedUser) return GetUserBoardListResponseDto.notExistUser();
 
-            boardListEntities = boardMapper.selectUserBoardList(userId);
+            postList = postRepository.selectUserBoardList(userId);
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
         }
-        return GetUserBoardListResponseDto.success(boardListEntities);
+        return GetUserBoardListResponseDto.success(postList);
     }
 
     @Override
     public ResponseEntity<? super GetCategoryOfBoardListResponseDto> getCategoryOfBoardList() {
         try {
-            List<CategoryBoardListEntity> boardListEntities = boardMapper.selectCategoryOfBoardList();
-            return GetCategoryOfBoardListResponseDto.success(boardListEntities);
+            List<Long> categoryIds = categoryRepository.findAllIds();
+            List<CategoryPostDto> postList = categoryIds.stream()
+                .map(categoryId -> {
+                    List<PostDto> posts = categoryRepository.selectRecentPostsByCategory(categoryId);
+                    String categoryName = posts.isEmpty() ? "Unknown" : posts.get(0).getCategoryName();
+                    return new CategoryPostDto(categoryName, posts);
+                })
+                .collect(Collectors.toList());
+            return GetCategoryOfBoardListResponseDto.success(postList);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databaseError();
@@ -257,34 +253,32 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional
     @Override
-    public ResponseEntity<? super PutFavoriteResponseDto> likeBoard(Integer category_id, Integer post_number, String userId) {
+    public ResponseEntity<? super PutFavoriteResponseDto> likeBoard(Long category_id, Long post_number, String userId) {
         try {
-            boolean isExisted = userMapper.existsByUserId(userId);
+            boolean isExisted = userRepository.existsByUserId(userId);
             if(!isExisted) return PutFavoriteResponseDto.notExistUser();
 
-            log.info("Finding board with category_id: {}, post_number: {}", category_id, post_number);
-            BoardEntity boardEntity = boardMapper.findByPostNumber(category_id, post_number);
-            if(boardEntity == null) return PutFavoriteResponseDto.notExistBoard();
+            Post post = postRepository.findById(post_number);
+            if(post == null) return PutFavoriteResponseDto.notExistBoard();
 
-            log.info("Found BoardEntity: {}", boardEntity);
+            User user = userRepository.findByUserId(userId);
 
-            UserEntity user = userMapper.findByUserId(userId);
-
-            boolean favoriteExists = favoriteMapper.findByBoardNumberAndUserId(user.getId(), post_number);
+            boolean favoriteExists = favoriteRepository.findByBoardNumberAndUserId(user.getId(), post_number);
             if (!favoriteExists) {
-                FavoriteEntity favoriteEntity = new FavoriteEntity(user.getId(), post_number);
-                favoriteMapper.save(favoriteEntity);
-                boardEntity.setFavorite_count(boardEntity.getFavorite_count() + 1);
+                Favorite favoriteEntity = Favorite.builder()
+                    .user(user)
+                    .post(post)
+                    .build();
+                favoriteRepository.save(favoriteEntity);
+                post.setFavorite_count(post.getFavorite_count() + 1);
             } else {
-                favoriteMapper.delete(user.getId(), post_number);
-                if (boardEntity.getFavorite_count() > 0) {
-                    boardEntity.setFavorite_count(boardEntity.getFavorite_count() - 1);
+                favoriteRepository.delete(user.getId(), post_number);
+                if (post.getFavorite_count() > 0) {
+                    post.setFavorite_count(post.getFavorite_count() - 1);
                 }
             }
 
-            log.info("Updating favorite count for post_number: {}, new favorite_count: {}", boardEntity.getPost_number(), boardEntity.getFavorite_count());
-            boardMapper.updateFavoriteCount(boardEntity.getPost_number(), boardEntity.getFavorite_count());
-            return PutFavoriteResponseDto.success(boardEntity.getFavorite_count());
+            return PutFavoriteResponseDto.success(post.getFavorite_count());
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databaseError();
@@ -293,25 +287,23 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional
     @Override
-    public ResponseEntity<? super PostCommentResponseDto> addComment(Integer category_id, Integer post_number, String userId,
+    public ResponseEntity<? super PostCommentResponseDto> addComment(Long category_id, Long post_number, String userId,
             PostCommentRequestDto dto) {
         try {
-            boolean isExisted = userMapper.existsByUserId(userId);
-            if (!isExisted) return PostCommentResponseDto.notExistUser();
+            User user = userRepository.findByUserId(userId);
+            if(user == null) return PostCommentResponseDto.notExistUser();
 
-            CommentEntity commentEntity = CommentEntity.builder()
-                    .post_number(post_number)
+            Post post = postRepository.findById(post_number);
+            if(post == null) return PostCommentResponseDto.notExistBoard();
+
+            Comment comment = Comment.builder()
                     .contents(dto.getContent())
-                    .write_datetime(new Date())
-                    .subcomment_id(dto.getSubcomment_id() != null ? dto.getSubcomment_id() : 0) // 대댓글인 경우 부모 댓글 ID 설정
-                    .user_id(userMapper.findUserId(userId)
-                            .orElseThrow(() -> new UsernameNotFoundException("User not found")).getId())
+                    .user(user)
+                    .post(post)
                     .build();
             
-            boardMapper.addComment(commentEntity);
-            BoardEntity boardEntity = boardMapper.findByPostNumber(category_id, post_number);
-            boardEntity.increaseCommentCount();
-            boardMapper.updateCommentCount(boardEntity.getPost_number(), boardEntity.getComment_count());
+            commentRepository.save(comment);
+            post.increaseCommentCount();
             return PostCommentResponseDto.success();
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -320,20 +312,15 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public ResponseEntity<? super GetCommentListResponseDto> getCommentList(Integer category_id, Integer post_number) {
+    public ResponseEntity<? super GetCommentListResponseDto> getCommentList(Long category_id, Long post_number) {
         try {
-            List<CommentEntity> comments = boardMapper.selectCommentsByPostNumber(post_number);
-            List<CommentEntity> allComments = new ArrayList<>();
+            List<Comment> comments = commentRepository.selectCommentsByPostNumber(post_number);
+            List<Comment> allComments = new ArrayList<>();
             
-            for (CommentEntity comment : comments) {
-                if(comment.getSubcomment_id() == 0) { // 대댓글이 없는 경우
-                    allComments.add(comment);
-                } else { // 대댓글이 있는 경우
-                    CommentEntity parentComment = findParentComment(allComments, comment.getSubcomment_id());
-                    if (parentComment != null) {
-                        parentComment.getSubcomments().add(comment);
-                    }
-                }
+            for (Comment comment : comments) {
+                allComments.add(comment);
+                List<SubComment> subComments = subCommentRepository.findByParentCommentId(comment.getId());
+                comment.getSubcomments().addAll(subComments);
             }
             return GetCommentListResponseDto.success(allComments);
         } catch (Exception exception) {
@@ -342,25 +329,16 @@ public class BoardServiceImpl implements BoardService{
         }
     }
 
-    private CommentEntity findParentComment(List<CommentEntity> comments, Integer parentId) {
-        for (CommentEntity comment : comments) {
-            if (comment.getComment_id() == parentId) {
-                return comment;
-            }
-        }
-        return null;
-    }
-
     @Override
-    public ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(Integer category_id,
-            Integer post_number) {
-        List<GetFavoriteListResultSet> resultSets = new ArrayList<>();
+    public ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(Long category_id,
+            Long post_number) {
+        List<FavoriteListDto> resultSets = new ArrayList<>();
         
         try {
-            boolean existedBoard = boardMapper.existedBoard(category_id, post_number);
+            boolean existedBoard = postRepository.existsByPostNumberAndCategoryId(post_number, category_id);
             if(!existedBoard) return GetFavoriteListResponseDto.notExistBoard();
 
-            resultSets = favoriteMapper.getFavoriteList(post_number);
+            resultSets = favoriteRepository.findByPostId(post_number);
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
@@ -369,23 +347,30 @@ public class BoardServiceImpl implements BoardService{
         return GetFavoriteListResponseDto.success(resultSets);
     }
 
+    @Transactional
     @Override
-    public ResponseEntity<? super PostCommentResponseDto> addSubComment(Integer category_id, Integer post_number,
+    public ResponseEntity<? super PostCommentResponseDto> addSubComment(Long category_id, Long post_number,
             String userId, PostSubCommentRequestDto dto) {
         try {
-            boolean isExisted = userMapper.existsByUserId(userId);
+            boolean isExisted = userRepository.existsByUserId(userId);
             if (!isExisted)
                 return PostCommentResponseDto.notExistUser();
             
-            CommentEntity subCommentEntity = CommentEntity.builder()
-                    .post_number(post_number)
-                    .contents(dto.getContent())
-                    .write_datetime(new Date())
-                    .subcomment_id(dto.getParent_comment_id()) // 부모 댓글 ID 설정
-                    .user_id(userMapper.findUserId(userId)
-                            .orElseThrow(() -> new UsernameNotFoundException("User not found")).getId())
-                    .build();
-            boardMapper.addComment(subCommentEntity);
+            User user = userRepository.findByUserId(userId);
+            if(user == null) return PostCommentResponseDto.notExistUser();
+
+            Post post = postRepository.findById(post_number);
+            if(post == null) return PostCommentResponseDto.notExistBoard();
+
+            Comment parentComment = commentRepository.findById(dto.getParent_comment_id());
+            if(parentComment == null) return PostCommentResponseDto.notExistComment();
+
+            SubComment subCommentEntity = SubComment.builder()
+                .content(dto.getContent())
+                .parentComment(parentComment)
+                .build();
+
+            subCommentRepository.save(subCommentEntity);
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();

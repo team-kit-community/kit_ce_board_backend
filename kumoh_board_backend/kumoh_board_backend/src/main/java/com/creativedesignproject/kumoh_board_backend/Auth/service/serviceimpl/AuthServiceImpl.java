@@ -1,9 +1,6 @@
 package com.creativedesignproject.kumoh_board_backend.Auth.service.serviceimpl;
 
-import java.util.Date;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,23 +18,23 @@ import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ResponseD
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.SignInResponseDto;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.SignUpResponseDto;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.UserIdCheckResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.entity.CertificationEntity;
-import com.creativedesignproject.kumoh_board_backend.Auth.entity.UserEntity;
+import com.creativedesignproject.kumoh_board_backend.Auth.entity.Certification;
+import com.creativedesignproject.kumoh_board_backend.Auth.entity.User;
 import com.creativedesignproject.kumoh_board_backend.Auth.provider.EmailProvider;
 import com.creativedesignproject.kumoh_board_backend.Auth.provider.JwtProvider;
+import com.creativedesignproject.kumoh_board_backend.Auth.repository.CertificationRepository;
+import com.creativedesignproject.kumoh_board_backend.Auth.repository.UserRepository;
 import com.creativedesignproject.kumoh_board_backend.Auth.service.AuthService;
-import com.creativedesignproject.kumoh_board_backend.mapper.AuthMapper;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ChangeNicknameResponseDto;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ChangePasswordResponseDto;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class AuthServiceImpl implements AuthService{
-    private final AuthMapper authMapper;
+    private final UserRepository userRepository;
+    private final CertificationRepository certificationRepository;
     private final JwtProvider jwtProvider;
     private final EmailProvider emailProvider;
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -47,7 +44,7 @@ public class AuthServiceImpl implements AuthService{
         try {
             String email = dto.getEmail();
 
-            boolean isExistEmail = authMapper.existsByUserEmail(email);
+            boolean isExistEmail = userRepository.existsByUserEmail(email);
             if (isExistEmail) return EmailCertificationResponseDto.duplicatedEmail();
 
             String certificationNumber = CertificationNumber.getCertificationNumber();
@@ -55,12 +52,12 @@ public class AuthServiceImpl implements AuthService{
             boolean isSuccessed = emailProvider.sendCertificationMail(email, certificationNumber);
             if (!isSuccessed) return EmailCertificationResponseDto.mailSendFail();
 
-            CertificationEntity certificationEntity = CertificationEntity.builder()
-                        .certification_email(email)
-                        .certification_number(certificationNumber)
+            Certification certification = Certification.builder()
+                        .certificationEmail(email)
+                        .certificationNumber(certificationNumber)
                         .build();
             
-            authMapper.certificationSave(certificationEntity);
+            certificationRepository.save(certification);
 
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -78,37 +75,33 @@ public class AuthServiceImpl implements AuthService{
             String certificationNumber = dto.getCertificationNumber();
             String nickName = dto.getNickName();
             
-            boolean isExistNickname = authMapper.existsByUserNickname(nickName); // repository에 유저가 존재하는지 확인하고
-            log.info("isExistNickname : " + isExistNickname);
+            boolean isExistNickname = userRepository.existsByUserNickname(nickName);
             if (isExistNickname) return SignUpResponseDto.duplicateNickname();
 
             String password = dto.getPassword();
             String encodedPassword = passwordEncoder.encode(password);
 
-            CertificationEntity certificationEntity = authMapper.findByUserEmail(email);
-            if (certificationEntity == null)
+            Certification certification = certificationRepository.findByUserEmail(email);
+            if (certification == null)
                 return SignUpResponseDto.certificationFail();
 
-            boolean isMatched = certificationEntity.getCertification_email().equals(email)
-                    && certificationEntity.getCertification_number().equals(certificationNumber);
+            boolean isMatched = certification.getCertificationEmail().equals(email)
+                    && certification.getCertificationNumber().equals(certificationNumber);
             if (!isMatched)
                 return SignUpResponseDto.certificationFail();
 
-            UserEntity userEntity = UserEntity.builder()
-                    .user_id(userId)
+            User user = User.builder()
+                    .userId(userId)
                     .password(encodedPassword)
                     .nickname(dto.getNickName())
                     .email(email)
-                    .isAdmin(false)
                     .role("ROLE_USER")
-                    .createdAt(new Date())
-                    .updatedAt(new Date())
-                    .profile_image(dto.getProfileImage())
+                    .profileImage(dto.getProfileImage())
                     .build();
             
-            authMapper.UserSave(userEntity);
+            userRepository.save(user);
 
-            authMapper.deleteByCertificationUserEmail(email); // 회원가입 하고 certification 테이블에 있는 이메일 삭제
+            certificationRepository.deleteByCertificationUserEmail(email);
 
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -122,11 +115,11 @@ public class AuthServiceImpl implements AuthService{
         String token = null;
         try {
             String userId = dto.getUserId();
-            UserEntity userEntity = authMapper.findByUserId(userId);
-            if (userEntity == null) return SignInResponseDto.signInFail();
+            User user = userRepository.findByUserId(userId);
+            if (user == null) return SignInResponseDto.signInFail();
 
             String password = dto.getPassword();
-            String encodedPassword = userEntity.getPassword();
+            String encodedPassword = user.getPassword();
             boolean isMatched = passwordEncoder.matches(password, encodedPassword);
             if (!isMatched) return SignInResponseDto.signInFail();
 
@@ -142,7 +135,7 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public ResponseEntity<? super UserIdCheckResponseDto> checkUserId(UserIdCheckRequestDto dto) {
         try {
-            boolean isExistUserId = authMapper.existsByUserId(dto.getUserId());
+            boolean isExistUserId = userRepository.existsByUserId(dto.getUserId());
             if (isExistUserId) return UserIdCheckResponseDto.duplicateId();
         } catch (Exception e) {
             e.printStackTrace();
@@ -155,16 +148,15 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public ResponseEntity<? super ChangePasswordResponseDto> changePassword(String userId, ChangePasswordRequestDto dto) {
         try {
-            UserEntity user = authMapper.findUserId(userId)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            log.info("Updating userId: {}", userId);
+            User user = userRepository.findByUserId(userId);
+            if (user == null) return ResponseDto.validationFail();
+
             if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
                 return ResponseDto.validationFail();
             }
 
             user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
-            log.info("Updating user: {}", user);
-            authMapper.updateUser(user);
+            userRepository.save(user);
             return ChangePasswordResponseDto.success();
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -176,14 +168,14 @@ public class AuthServiceImpl implements AuthService{
     public ResponseEntity<? super ChangeNicknameResponseDto> changeNickname(String userId,
             ChangeNicknameRequestDto dto) {
         try {
-            boolean isNicknameExist = authMapper.existsByUserNickname(dto.getNewNickname());
+            boolean isNicknameExist = userRepository.existsByUserNickname(dto.getNewNickname());
             if (isNicknameExist) return ChangeNicknameResponseDto.duplicateNickname();
 
-            UserEntity user = authMapper.findUserId(userId)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            User user = userRepository.findByUserId(userId);
+            if (user == null) return ResponseDto.validationFail();
 
             user.setNickname(dto.getNewNickname());
-            authMapper.updateUser(user);
+            userRepository.save(user);
             return ChangeNicknameResponseDto.success();
         } catch (Exception exception) {
             exception.printStackTrace();

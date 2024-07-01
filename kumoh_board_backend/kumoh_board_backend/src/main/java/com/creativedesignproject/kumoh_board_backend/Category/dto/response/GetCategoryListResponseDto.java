@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Category.entity.CategoryEntity;
+import com.creativedesignproject.kumoh_board_backend.Category.entity.Category;
 import com.creativedesignproject.kumoh_board_backend.Common.ResponseCode;
 import com.creativedesignproject.kumoh_board_backend.Common.ResponseMessage;
 
@@ -14,14 +14,14 @@ import lombok.Getter;
 
 @Getter
 public class GetCategoryListResponseDto extends ResponseDto{
-    private final List<CategoryEntity> categoryList;
+    private final List<Category> categoryList;
 
-    private GetCategoryListResponseDto(List<CategoryEntity> categoryList) {
+    private GetCategoryListResponseDto(List<Category> categoryList) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
         this.categoryList = categoryList;
     }
 
-    public static ResponseEntity<GetCategoryListResponseDto> success(List<CategoryEntity> categoryList) {
+    public static ResponseEntity<GetCategoryListResponseDto> success(List<Category> categoryList) {
         GetCategoryListResponseDto responseBody = new GetCategoryListResponseDto(categoryList);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
