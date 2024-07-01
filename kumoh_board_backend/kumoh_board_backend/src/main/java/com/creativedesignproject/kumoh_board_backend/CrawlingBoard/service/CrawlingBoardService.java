@@ -13,6 +13,6 @@ public interface CrawlingBoardService {
     ResponseEntity<? super CrawlingActivitiesFromWevityResponseDto> crawlActivitiesFromWevityList();
     ResponseEntity<? super CrawlingContestFromLinkCareerResponseDto> crawlContestsFromLinkCareerList();
     ResponseEntity<? super CrawlingActivitiesFromLinkCareerResponseDto> crawlActivitiesFromLinkCareerList();
-    ResponseEntity<? super GetCrawlingDetailBoardResponseDto> getCrawlingDetailBoard(int category_id, int post_number, String type);
+    ResponseEntity<? super GetCrawlingDetailBoardResponseDto> getCrawlingDetailBoard(Long category_id, Long post_number, String type);
 }
 

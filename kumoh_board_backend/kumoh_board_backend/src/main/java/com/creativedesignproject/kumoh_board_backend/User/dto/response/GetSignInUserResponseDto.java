@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.entity.UserEntity;
+import com.creativedesignproject.kumoh_board_backend.Auth.entity.User;
 import com.creativedesignproject.kumoh_board_backend.Common.ResponseCode;
 import com.creativedesignproject.kumoh_board_backend.Common.ResponseMessage;
 
@@ -16,14 +16,14 @@ public class GetSignInUserResponseDto extends ResponseDto{
     private String nickName;
     private String profileImage;
 
-    private GetSignInUserResponseDto(UserEntity userEntity) {
+    private GetSignInUserResponseDto(User userEntity) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
         this.userId = userEntity.getUser_id();
         this.nickName = userEntity.getNickname();
         this.profileImage = userEntity.getProfile_image();
     }
 
-    public static ResponseEntity<GetSignInUserResponseDto> success(UserEntity userEntity) {
+    public static ResponseEntity<GetSignInUserResponseDto> success(User userEntity) {
         GetSignInUserResponseDto responseBody = new GetSignInUserResponseDto(userEntity);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }

@@ -25,12 +25,15 @@ import org.springframework.stereotype.Service;
 
 import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.common.RobustWebDriver;
 import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.common.RobustWebElement;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.CrawlingActivitiesEntity;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.CrawlingContestsEntity;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.LinkCareerContestsEntity;
+import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.CrawlingActivities;
+import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.CrawlingContests;
+import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.LinkCareerContests;
+import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.repository.CrawlingActivitiesRepository;
+import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.repository.CrawlingContestsRepository;
+import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.repository.LinkCareerActivitiesRepository;
+import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.repository.LinkCareerContestsRepository;
 import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.service.CrawlingService;
-import com.creativedesignproject.kumoh_board_backend.mapper.CrawlingMapper;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.LinkCareerActivitiesEntity;
+import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.LinkCareerActivities;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +42,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class CrawlingServiceImpl implements CrawlingService {
-    private final CrawlingMapper crawlingMapper;
+    private final CrawlingActivitiesRepository crawlingActivitiesRepository;
+    private final CrawlingContestsRepository crawlingContestsRepository;
+    private final LinkCareerActivitiesRepository linkCareerActivitiesRepository;
+    private final LinkCareerContestsRepository linkCareerContestsRepository;
 
     private final String wevityUrl = "https://www.wevity.com";
     private final String linkCareerUrl = "https://linkareer.com";
@@ -48,7 +54,7 @@ public class CrawlingServiceImpl implements CrawlingService {
     @Override
     public void crawlContestsFromWevity() throws IOException {
         int remainingDaysThreshold = 0; // 남은 기간이 0일 이하인 데이터 삭제
-        crawlingMapper.deleteByRemainingDaysLessThanEqualContest(remainingDaysThreshold);
+        crawlingContestsRepository.deleteByRemainingDaysLessThanEqualContest(remainingDaysThreshold);
 
         int[] fieldPageNums = {20, 21, 22};
 
@@ -80,8 +86,8 @@ public class CrawlingServiceImpl implements CrawlingService {
                     int views = Integer.parseInt(contest.select(".read").text().replaceAll("[^0-9]", "")); // 리뷰 수를 int로 변환
                     String url = contest.select(".tit a").attr("abs:href"); // 상세 링크
 
-                    LocalDate parsedDate = parseDate(date);
-                    if (crawlingMapper.existsByUrlContest(url)) {
+                    // LocalDate parsedDate = parseDate(date);
+                    if (crawlingContestsRepository.existsByUrlContest(url)) {
                         log.info("중복된 데이 뛰어넘음");
                         continue;
                     } 
@@ -90,17 +96,17 @@ public class CrawlingServiceImpl implements CrawlingService {
 
                     String detailData = detailDoc.select(".article .comm-desc div").text();
 
-                    CrawlingContestsEntity crawlingEntity = CrawlingContestsEntity.builder()
+                    CrawlingContests crawlingEntity = CrawlingContests.builder()
                             .title(title)
                             .field(field)
                             .host(host)
                             .status(status)
-                            .date(parsedDate)
+                            .date(date)
                             .url(url)
                             .views(views)
                             .detailData(detailData)
                             .build();
-                    crawlingMapper.save(crawlingEntity);
+                    crawlingContestsRepository.save(crawlingEntity);
                 }
                 pageNum++;
             }
@@ -111,7 +117,7 @@ public class CrawlingServiceImpl implements CrawlingService {
     @Override
     public void crawlActivitiesFromWevity() throws IOException {
         int remainingDaysThreshold = 0; // 남은 기간이 0일 이하인 데이터 삭제
-        crawlingMapper.deleteByRemainingDaysLessThanEqualActivity(remainingDaysThreshold);
+        crawlingActivitiesRepository.deleteByRemainingDaysLessThanEqualActivity(remainingDaysThreshold);
         
         int pageNum = 1;
         while (true) {
@@ -147,10 +153,10 @@ public class CrawlingServiceImpl implements CrawlingService {
                     continue;
                 }
 
-                LocalDate parsedDate = parseDate(date);
+                // LocalDate parsedDate = parseDate(date);
                 String url = contest.select("li a").attr("abs:href"); // 상세 링크
 
-                if (crawlingMapper.existsByUrlActivity(url)) {
+                if (crawlingActivitiesRepository.existsByUrlActivity(url)) {
                     log.info("중복된 데이터 뛰어넘음");
                     continue;
                 }
@@ -159,15 +165,15 @@ public class CrawlingServiceImpl implements CrawlingService {
 
                 String detailData = detailDoc.select(".contest-detail div").text();
 
-                CrawlingActivitiesEntity crawlingEntity = CrawlingActivitiesEntity.builder()
+                CrawlingActivities crawlingEntity = CrawlingActivities.builder()
                         .title(title)
                         .field(field)
                         .image(wevityUrl + image)
-                        .date(parsedDate)
+                        .date(date)
                         .url(url)
                         .detailData(detailData)
                         .build();
-                crawlingMapper.saveActivity(crawlingEntity);
+                crawlingActivitiesRepository.save(crawlingEntity);
             }
             pageNum++;
         }
@@ -183,7 +189,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 
         int pageNum = 1;
         List<String> detailUrls = new ArrayList<>();
-        Set<String> existingUrls = new HashSet<>(crawlingMapper.findAllLinkCareerContestUrls());
+        Set<String> existingUrls = new HashSet<>(linkCareerContestsRepository.findAllLinkCareerContestUrls());
 
         while(true) {
             final String contestUrl = "/list/contest?filterBy_categoryIDs=35&filterBy_categoryIDs=33&filterType=CATEGORY&orderBy_direction=DESC&orderBy_field=CREATED_AT&page=" + pageNum;
@@ -226,23 +232,23 @@ public class CrawlingServiceImpl implements CrawlingService {
 
                 detailUrls.add(url);
 
-                LocalDate parsedDate = parseDate(date);
-                LinkCareerContestsEntity crawlingEntity = LinkCareerContestsEntity.builder()
+                // LocalDate parsedDate = parseDate(date);
+                LinkCareerContests crawlingEntity = LinkCareerContests.builder()
                         .title(title)
                         .url(url)
                         .image(image)
                         .host(host)
-                        .date(parsedDate)
+                        .date(date)
                         .build();
 
-                crawlingMapper.saveLinkCareerContest(crawlingEntity);
+                linkCareerContestsRepository.save(crawlingEntity);
                 existingUrls.add(url);
             }
             pageNum++;
         }
         log.info("목록 페이지 크롤링이 완료되었습니다. 상세 페이지 크롤링을 시작합니다.");
 
-        List<LinkCareerContestsEntity> entitiesToUpdate = new ArrayList<>();
+        List<LinkCareerContests> entitiesToUpdate = new ArrayList<>();
 
         log.info("existingUrls 크기: {}", existingUrls.size());
 
@@ -261,7 +267,7 @@ public class CrawlingServiceImpl implements CrawlingService {
                 log.warn("상세 데이터를 찾을 수 없습니다. 상세 데이터가 없는 것으로 간주합니다.");
             }
 
-            LinkCareerContestsEntity existingEntity = crawlingMapper.findByUrlLinkCareerContest(detailUrl);
+            LinkCareerContests existingEntity = linkCareerContestsRepository.findByUrlLinkCareerContest(detailUrl);
             log.info("existingEntity: {}", existingEntity);
             existingEntity.setDetailData(detailData);
             entitiesToUpdate.add(existingEntity);
@@ -270,7 +276,7 @@ public class CrawlingServiceImpl implements CrawlingService {
         log.info("entitiesToUpdate 크기: {}", entitiesToUpdate.size());
         log.info("entitiesToUpdate: {}", entitiesToUpdate.get(0).getDetailData());
         log.info("여기서 멈춘건가?");
-        crawlingMapper.saveAllLinkCareerContests(entitiesToUpdate);
+        linkCareerContestsRepository.saveAll(entitiesToUpdate);
 
         driver.close();
         driver.quit();
@@ -286,7 +292,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 
         int pageNum = 1;
         List<String> detailUrls = new ArrayList<>();
-        Set<String> existingUrls = new HashSet<>(crawlingMapper.findAllLinkCareerActivitiesUrls());
+        Set<String> existingUrls = new HashSet<>(linkCareerActivitiesRepository.findAllLinkCareerActivitiesUrls());
 
         while(true) {
             final String activitiesUrl = "/list/activity?filterBy_interestIDs=13&filterType=INTEREST&orderBy_direction=DESC&orderBy_field=CREATED_AT&page=" + pageNum;
@@ -329,23 +335,23 @@ public class CrawlingServiceImpl implements CrawlingService {
 
                 detailUrls.add(url);
 
-                LocalDate parsedDate = parseDate(date);
-                LinkCareerActivitiesEntity crawlingEntity = LinkCareerActivitiesEntity.builder()
+                // LocalDate parsedDate = parseDate(date);
+                LinkCareerActivities crawlingEntity = LinkCareerActivities.builder()
                         .title(title)
                         .url(url)
                         .image(image)
                         .host(host)
-                        .date(parsedDate)
+                        .date(date)
                         .build();
 
-                crawlingMapper.saveLinkCareerActivity(crawlingEntity);
+                linkCareerActivitiesRepository.save(crawlingEntity);
                 existingUrls.add(url);
             }
             pageNum++;
         }
         log.info("목록 페이지 크롤링이 완료되었습니다. 상세 페이지 크롤링을 시작합니다.");
 
-        List<LinkCareerActivitiesEntity> entitiesToUpdate = new ArrayList<>();
+        List<LinkCareerActivities> entitiesToUpdate = new ArrayList<>();
 
         log.info("existingUrls 크기: {}", existingUrls.size());
 
@@ -364,7 +370,7 @@ public class CrawlingServiceImpl implements CrawlingService {
                 log.warn("상세 데이터를 찾을 수 없습니다. 상세 데이터가 없는 것으로 간주합니다.");
             }
 
-            LinkCareerActivitiesEntity existingEntity = crawlingMapper.findByUrlLinkCareerActivity(detailUrl);
+            LinkCareerActivities existingEntity = linkCareerActivitiesRepository.findByUrlLinkCareerActivity(detailUrl);
             log.info("existingEntity: {}", existingEntity);
             existingEntity.setDetailData(detailData);
             entitiesToUpdate.add(existingEntity);
@@ -372,7 +378,7 @@ public class CrawlingServiceImpl implements CrawlingService {
         // Batch save
         log.info("entitiesToUpdate 크기: {}", entitiesToUpdate.size());
         log.info("여기서 멈춘건가?");
-        crawlingMapper.saveAllLinkCareerActivities(entitiesToUpdate);
+        linkCareerActivitiesRepository.saveAll(entitiesToUpdate);
 
         driver.close();
         driver.quit();

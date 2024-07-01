@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.creativedesignproject.kumoh_board_backend.Category.entity.CategoryEntity;
+import com.creativedesignproject.kumoh_board_backend.Category.entity.Category;
 import com.creativedesignproject.kumoh_board_backend.Category.service.CategoryService;
 
 import jakarta.validation.Valid;
@@ -32,19 +32,19 @@ public class CategoryController {
 
     @PostMapping("/register")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<? super RegisterCategoryResponseDto> registerCategory(@RequestBody CategoryEntity categoryEntity) {
+    public ResponseEntity<? super RegisterCategoryResponseDto> registerCategory(@RequestBody Category categoryEntity) {
         return categoryService.registerCategory(categoryEntity);
     }
 
     @PatchMapping("/update/{category_id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<? super UpdateCategoryResponseDto> updateCategory(@PathVariable int category_id, @RequestBody @Valid UpdateCategoryRequestDto dto) {
+    public ResponseEntity<? super UpdateCategoryResponseDto> updateCategory(@PathVariable Long category_id, @RequestBody @Valid UpdateCategoryRequestDto dto) {
         return categoryService.updateCategory(category_id, dto);
     }
 
     @DeleteMapping("/delete/{category_id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<? super DeleteCategoryResponseDto> deleteCategory(@PathVariable int category_id) {
+    public ResponseEntity<? super DeleteCategoryResponseDto> deleteCategory(@PathVariable Long category_id) {
         return categoryService.deleteCategoryName(category_id);
     }
 

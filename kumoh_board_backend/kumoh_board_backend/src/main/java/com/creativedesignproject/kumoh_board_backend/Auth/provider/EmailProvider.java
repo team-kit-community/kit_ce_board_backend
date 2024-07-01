@@ -34,7 +34,6 @@ public class EmailProvider {
         }
 
         return true;
-
     }
 
     private String getCertificationMessage(String certificationNumber) {

@@ -8,20 +8,20 @@ import org.springframework.http.ResponseEntity;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ResponseDto;
 import com.creativedesignproject.kumoh_board_backend.Common.ResponseCode;
 import com.creativedesignproject.kumoh_board_backend.Common.ResponseMessage;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.LinkCareerActivitiesEntity;
+import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.LinkCareerActivities;
 
 import lombok.Getter;
 
 @Getter
 public class CrawlingActivitiesFromLinkCareerResponseDto extends ResponseDto{
-    private List<LinkCareerActivitiesEntity> activities;
+    private List<LinkCareerActivities> activities;
 
-    private CrawlingActivitiesFromLinkCareerResponseDto(List<LinkCareerActivitiesEntity> activities) {
+    private CrawlingActivitiesFromLinkCareerResponseDto(List<LinkCareerActivities> activities) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
         this.activities = activities;
     }
 
-    public static ResponseEntity<CrawlingActivitiesFromLinkCareerResponseDto> success(List<LinkCareerActivitiesEntity> activities) {
+    public static ResponseEntity<CrawlingActivitiesFromLinkCareerResponseDto> success(List<LinkCareerActivities> activities) {
         return ResponseEntity.status(HttpStatus.OK).body(new CrawlingActivitiesFromLinkCareerResponseDto(activities));
     }
 }

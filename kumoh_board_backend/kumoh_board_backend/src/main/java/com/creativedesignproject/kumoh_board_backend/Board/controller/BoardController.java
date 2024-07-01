@@ -47,35 +47,35 @@ public class BoardController {
     @GetMapping("/{category_id}/{post_number}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<? super GetBoardResponseDto> getBoard(
-            @PathVariable Integer category_id, @PathVariable Integer post_number) {
+            @PathVariable Long category_id, @PathVariable Long post_number) {
         return boardService.getBoard(category_id, post_number);
     }
 
     @PostMapping("/{category_id}/register")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<? super PostBoardResponseDto> registerBoard(@RequestBody @Valid PostBoardRequestDto dto, @PathVariable Integer category_id, @AuthenticationPrincipal String userId) {
+    public ResponseEntity<? super PostBoardResponseDto> registerBoard(@RequestBody @Valid PostBoardRequestDto dto, @PathVariable Long category_id, @AuthenticationPrincipal String userId) {
         return boardService.registerBoard(dto, category_id, userId);
     }
 
     @DeleteMapping("/{category_id}/{post_number}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<? super DeleteBoardResponseDto> deleteBoard(@PathVariable Integer category_id, @PathVariable Integer post_number, @AuthenticationPrincipal String userId) {
+    public ResponseEntity<? super DeleteBoardResponseDto> deleteBoard(@PathVariable Long category_id, @PathVariable Long post_number, @AuthenticationPrincipal String userId) {
         return boardService.deleteBoard(category_id, post_number, userId);
     }
 
     @PatchMapping("/{category_id}/{post_number}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<? super PatchBoardResponseDto> patchBoard(@PathVariable Integer category_id, @PathVariable Integer post_number, @AuthenticationPrincipal String userId,@RequestBody @Valid PatchBoardRequestDto dto) {
+    public ResponseEntity<? super PatchBoardResponseDto> patchBoard(@PathVariable Long category_id, @PathVariable Long post_number, @AuthenticationPrincipal String userId,@RequestBody @Valid PatchBoardRequestDto dto) {
         return boardService.patchBoard(category_id, post_number, userId, dto);
     }
 
     @GetMapping("/{category_id}/latest_list")
-    public ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList(@PathVariable Integer category_id) {
+    public ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList(@PathVariable Long category_id) {
         return boardService.getLatestBoardList(category_id);
     }
 
     @GetMapping("/{category_id}/Top_3")
-    public ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList(@PathVariable Integer category_id) {
+    public ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList(@PathVariable Long category_id) {
         return boardService.getTop3BoardList(category_id);
     }
 
@@ -97,34 +97,34 @@ public class BoardController {
 
     @PutMapping("/{category_id}/{post_number}/favorite")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<? super PutFavoriteResponseDto> likeBoard(@PathVariable Integer category_id, @PathVariable Integer post_number, @AuthenticationPrincipal String userId) {
+    public ResponseEntity<? super PutFavoriteResponseDto> likeBoard(@PathVariable Long category_id, @PathVariable Long post_number, @AuthenticationPrincipal String userId) {
         return boardService.likeBoard(category_id, post_number, userId);
     }
 
     @GetMapping("/{category_id}/{post_number}/favorite-list")
     public ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(
-            @PathVariable Integer category_id,
-            @PathVariable Integer post_number) {
+            @PathVariable Long category_id,
+            @PathVariable Long post_number) {
         return boardService.getFavoriteList(category_id, post_number);
     }
 
     @PostMapping("/{category_id}/{post_number}/comment")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<? super PostCommentResponseDto> addComment(@PathVariable Integer category_id, @PathVariable Integer post_number, @AuthenticationPrincipal String userId, @RequestBody @Valid PostCommentRequestDto dto) {
+    public ResponseEntity<? super PostCommentResponseDto> addComment(@PathVariable Long category_id, @PathVariable Long post_number, @AuthenticationPrincipal String userId, @RequestBody @Valid PostCommentRequestDto dto) {
         return boardService.addComment(category_id, post_number, userId, dto);
     }
 
     @PostMapping("/{category_id}/{post_number}/subComment")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<? super PostCommentResponseDto> addSubComment(@PathVariable Integer category_id,
-            @PathVariable Integer post_number, @AuthenticationPrincipal String userId,
+    public ResponseEntity<? super PostCommentResponseDto> addSubComment(@PathVariable Long category_id,
+            @PathVariable Long post_number, @AuthenticationPrincipal String userId,
             @RequestBody @Valid PostSubCommentRequestDto dto) {
         return boardService.addSubComment(category_id, post_number, userId, dto);
     }
 
     @GetMapping("/{category_id}/{post_number}/comment-list")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<? super GetCommentListResponseDto> getCommentList(@PathVariable Integer category_id, @PathVariable Integer post_number) {
+    public ResponseEntity<? super GetCommentListResponseDto> getCommentList(@PathVariable Long category_id, @PathVariable Long post_number) {
         return boardService.getCommentList(category_id, post_number);
     }
 }

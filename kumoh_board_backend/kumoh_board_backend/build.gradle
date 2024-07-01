@@ -22,27 +22,38 @@ repositories {
 }
 
 dependencies {
+	//Mail
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	//Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	//Validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	//Web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	//AOP
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '3.1.2'
+	//Lombok
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
+	//MySQL
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	// JPA
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	//Test
+	testImplementation 'org.springframework.boot:spring-boot-starter-test' // Spring Boot Test
+	testImplementation 'org.springframework.security:spring-security-test' //Spring Security Test
+	testImplementation 'org.projectlombok:lombok' // Lombok for testing
+    testAnnotationProcessor 'org.projectlombok:lombok' // Lombok for testing
+	//Filter
 	compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'
+	//JWT
 	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
     implementation group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
     implementation group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
-
-	// https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
-	implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.18.1'
-	// https://mvnrepository.com/artifact/org.jsoup/jsoup
-	implementation group: 'org.jsoup', name: 'jsoup', version: '1.17.2'
+	//Selenium
+	implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.18.1' 
+	//Jsoup
+	implementation group: 'org.jsoup', name: 'jsoup', version: '1.17.2' 
 }
 
 tasks.named('test') {

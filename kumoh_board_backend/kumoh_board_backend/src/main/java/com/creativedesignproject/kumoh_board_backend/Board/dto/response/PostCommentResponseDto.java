@@ -28,4 +28,9 @@ public class PostCommentResponseDto extends ResponseDto {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ResponseDto(ResponseCode.NOT_EXISTED_BOARD, ResponseMessage.NOT_EXISTED_BOARD));
     }
+
+    public static ResponseEntity<ResponseDto> notExistComment() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseDto(ResponseCode.NOT_EXISTED_COMMENT, ResponseMessage.NOT_EXISTED_COMMENT));
+    }
 }

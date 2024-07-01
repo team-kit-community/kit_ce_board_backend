@@ -22,19 +22,19 @@ import com.creativedesignproject.kumoh_board_backend.Board.dto.response.GetFavor
 
 
 public interface BoardService {
-    ResponseEntity<? super GetBoardResponseDto> getBoard(Integer category_id, Integer post_number);
-    ResponseEntity<? super PostBoardResponseDto> registerBoard(PostBoardRequestDto dto, Integer category_id, String userId);
-    ResponseEntity<? super DeleteBoardResponseDto> deleteBoard(Integer category_id, Integer post_number, String userId);
-    ResponseEntity<? super PatchBoardResponseDto> patchBoard(Integer category_id, Integer post_number, String userId, PatchBoardRequestDto dto);
-    ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList(Integer category_id);
-    ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList(Integer category_id);
+    ResponseEntity<? super GetBoardResponseDto> getBoard(Long category_id, Long post_number);
+    ResponseEntity<? super PostBoardResponseDto> registerBoard(PostBoardRequestDto dto, Long category_id, String userId);
+    ResponseEntity<? super DeleteBoardResponseDto> deleteBoard(Long category_id, Long post_number, String userId);
+    ResponseEntity<? super PatchBoardResponseDto> patchBoard(Long category_id, Long post_number, String userId, PatchBoardRequestDto dto);
+    ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList(Long category_id);
+    ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList(Long category_id);
     ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(String search_word, String relation_word);
     ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(String userId);
     ResponseEntity<? super GetCategoryOfBoardListResponseDto> getCategoryOfBoardList();
-    ResponseEntity<? super PutFavoriteResponseDto> likeBoard(Integer category_id, Integer post_number, String userId);
-    ResponseEntity<? super PostCommentResponseDto> addComment(Integer category_id, Integer post_number, String userId, PostCommentRequestDto dto);
-    ResponseEntity<? super GetCommentListResponseDto> getCommentList(Integer category_id, Integer post_number);
-    ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(Integer category_id, Integer post_number);
-    ResponseEntity<? super PostCommentResponseDto> addSubComment(Integer category_id, Integer post_number, String userId, PostSubCommentRequestDto dto);
+    ResponseEntity<? super PutFavoriteResponseDto> likeBoard(Long category_id, Long post_number, String userId);
+    ResponseEntity<? super PostCommentResponseDto> addComment(Long category_id, Long post_number, String userId, PostCommentRequestDto dto);
+    ResponseEntity<? super GetCommentListResponseDto> getCommentList(Long category_id, Long post_number);
+    ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(Long category_id, Long post_number);
+    ResponseEntity<? super PostCommentResponseDto> addSubComment(Long category_id, Long post_number, String userId, PostSubCommentRequestDto dto);
 }
 

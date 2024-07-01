@@ -67,8 +67,8 @@ public class CrawlingController {
 
     @GetMapping("{category_id}/{post_number}/crawlPostDetail/{type}")
     public ResponseEntity<? super GetCrawlingDetailBoardResponseDto> getCrawlingDetailBoard(
-        @PathVariable("category_id") int category_id,
-        @PathVariable("post_number") int post_number,
+        @PathVariable("category_id") Long category_id,
+        @PathVariable("post_number") Long post_number,
         @PathVariable("type") String type
     ) {
         return crawlingBoardService.getCrawlingDetailBoard(category_id, post_number, type);

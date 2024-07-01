@@ -9,5 +9,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PostSubCommentRequestDto {
     private String content;
-    private Integer parent_comment_id;
+    private Long parent_comment_id;
 }
