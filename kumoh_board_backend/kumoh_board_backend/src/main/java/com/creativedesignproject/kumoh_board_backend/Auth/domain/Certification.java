@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Auth.entity;
+package com.creativedesignproject.kumoh_board_backend.Auth.domain;
 
 import com.creativedesignproject.kumoh_board_backend.Common.BaseEntity.BaseEntity;
 
@@ -20,12 +20,8 @@ public class Certification extends BaseEntity {
     @Column(name = "certification_number", nullable = false)
     private String certificationNumber;
 
-    @Column(name = "certification_email", nullable = false)
-    private String certificationEmail;
-
     @Builder
-    public Certification(String certificationNumber, String certificationEmail) {
+    public Certification(String certificationNumber) {
         this.certificationNumber = certificationNumber;
-        this.certificationEmail = certificationEmail;
     }
 }

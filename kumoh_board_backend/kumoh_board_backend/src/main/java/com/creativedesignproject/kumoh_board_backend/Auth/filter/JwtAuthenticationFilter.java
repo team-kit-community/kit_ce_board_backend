@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.entity.User;
+import com.creativedesignproject.kumoh_board_backend.Auth.domain.User;
 import com.creativedesignproject.kumoh_board_backend.Auth.provider.JwtProvider;
 import com.creativedesignproject.kumoh_board_backend.Auth.repository.UserRepository;
 

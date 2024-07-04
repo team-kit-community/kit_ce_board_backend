@@ -1,6 +1,6 @@
 package com.creativedesignproject.kumoh_board_backend.Board.entity;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.entity.User;
+import com.creativedesignproject.kumoh_board_backend.Auth.domain.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

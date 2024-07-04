@@ -2,7 +2,7 @@ package com.creativedesignproject.kumoh_board_backend.Auth.repository;
 
 import org.springframework.stereotype.Repository;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.entity.Certification;
+import com.creativedesignproject.kumoh_board_backend.Auth.domain.Certification;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;

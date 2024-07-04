@@ -3,7 +3,7 @@ package com.creativedesignproject.kumoh_board_backend.Board.entity;
 import lombok.Builder;
 import lombok.Getter;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.entity.User;
+import com.creativedesignproject.kumoh_board_backend.Auth.domain.User;
 import com.creativedesignproject.kumoh_board_backend.Category.entity.Category;
 import com.creativedesignproject.kumoh_board_backend.Common.BaseEntity.BaseEntity;
 

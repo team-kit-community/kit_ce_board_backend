@@ -16,9 +16,7 @@ import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.EmailCerti
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.SignInRequestDto;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.SignUpRequestDto;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.UserIdCheckRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.EmailCertificationResponseDto;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.SignInResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.SignUpResponseDto;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.UserIdCheckResponseDto;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ChangePasswordResponseDto;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ChangeNicknameResponseDto;
@@ -34,9 +32,9 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/emailCertification")
-    public ResponseEntity<? super EmailCertificationResponseDto> emailCertification(
-            @RequestBody @Valid EmailCertificationRequestDto requestBody) {
-        return authService.emailCertification(requestBody);
+    public ResponseEntity<Void> emailCertification(@RequestBody @Valid EmailCertificationRequestDto requestBody) {
+        authService.emailCertification(requestBody);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/checkUserId")
@@ -46,8 +44,9 @@ public class AuthController {
     }
 
     @PostMapping("/signUp")
-    public ResponseEntity<? super SignUpResponseDto> signUp(@RequestBody @Valid SignUpRequestDto requestBody) {
-        return authService.signUp(requestBody);
+    public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpRequestDto requestBody) {
+        authService.signUp(requestBody);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/signIn")

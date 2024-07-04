@@ -7,19 +7,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.creativedesignproject.kumoh_board_backend.Auth.common.CertificationNumber;
+import com.creativedesignproject.kumoh_board_backend.Auth.domain.Certification;
+import com.creativedesignproject.kumoh_board_backend.Auth.domain.User;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.ChangeNicknameRequestDto;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.ChangePasswordRequestDto;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.EmailCertificationRequestDto;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.SignInRequestDto;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.SignUpRequestDto;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.UserIdCheckRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.EmailCertificationResponseDto;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ResponseDto;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.SignInResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.SignUpResponseDto;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.UserIdCheckResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.entity.Certification;
-import com.creativedesignproject.kumoh_board_backend.Auth.entity.User;
 import com.creativedesignproject.kumoh_board_backend.Auth.provider.EmailProvider;
 import com.creativedesignproject.kumoh_board_backend.Auth.provider.JwtProvider;
 import com.creativedesignproject.kumoh_board_backend.Auth.repository.CertificationRepository;
@@ -27,11 +25,14 @@ import com.creativedesignproject.kumoh_board_backend.Auth.repository.UserReposit
 import com.creativedesignproject.kumoh_board_backend.Auth.service.AuthService;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ChangeNicknameResponseDto;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ChangePasswordResponseDto;
+import com.creativedesignproject.kumoh_board_backend.Common.exception.BadRequestException;
+import com.creativedesignproject.kumoh_board_backend.Common.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuthServiceImpl implements AuthService{
     private final UserRepository userRepository;
     private final CertificationRepository certificationRepository;
@@ -39,75 +40,70 @@ public class AuthServiceImpl implements AuthService{
     private final EmailProvider emailProvider;
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    @Transactional
     @Override
-    public ResponseEntity<? super EmailCertificationResponseDto> emailCertification(EmailCertificationRequestDto dto) {
-        try {
-            String email = dto.getEmail();
+    public void emailCertification(EmailCertificationRequestDto dto) {
+        String email = dto.getEmail();
+        
+        User user = userRepository.findByUserEmail(email);
 
-            boolean isExistEmail = userRepository.existsByUserEmail(email);
-            if (isExistEmail) return EmailCertificationResponseDto.duplicatedEmail();
+        if(user != null) throw new BadRequestException(ErrorCode.EMAIL_DUPLICATED);
 
-            String certificationNumber = CertificationNumber.getCertificationNumber();
+        String certificationNumber = CertificationNumber.getCertificationNumber();
 
-            boolean isSuccessed = emailProvider.sendCertificationMail(email, certificationNumber);
-            if (!isSuccessed) return EmailCertificationResponseDto.mailSendFail();
+        boolean isSuccessed = emailProvider.sendCertificationMail(email, certificationNumber);
+        if (!isSuccessed) throw new BadRequestException(ErrorCode.EMAIL_SEND_FAIL);
 
-            Certification certification = Certification.builder()
-                        .certificationEmail(email)
+        user = User.builder()
+                .email(email)
+                .certification(Certification.builder()
                         .certificationNumber(certificationNumber)
-                        .build();
-            
-            certificationRepository.save(certification);
+                        .build())
+                .build();
 
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-
-        return EmailCertificationResponseDto.success();
+        Certification certification = Certification.builder()
+                .certificationNumber(certificationNumber)
+                .build();
+        
+        certificationRepository.save(certification);
     }
 
+    @Transactional
     @Override
-    public ResponseEntity<? super SignUpResponseDto> signUp(SignUpRequestDto dto) {
-        try {
-            String userId = dto.getUserId();
-            String email = dto.getEmail();
-            String certificationNumber = dto.getCertificationNumber();
-            String nickName = dto.getNickName();
-            
-            boolean isExistNickname = userRepository.existsByUserNickname(nickName);
-            if (isExistNickname) return SignUpResponseDto.duplicateNickname();
+    public void signUp(SignUpRequestDto dto) {
+        String userId = dto.getUserId();
+        String email = dto.getEmail();
+        String certificationNumber = dto.getCertificationNumber();
+        String nickName = dto.getNickName();
+        String password = dto.getPassword();
+        String encodedPassword = passwordEncoder.encode(password);
+        
+        User user = userRepository.findByUserId(userId);
 
-            String password = dto.getPassword();
-            String encodedPassword = passwordEncoder.encode(password);
+        if(user != null) throw new BadRequestException(ErrorCode.USER_ID_DUPLICATED);
 
-            Certification certification = certificationRepository.findByUserEmail(email);
-            if (certification == null)
-                return SignUpResponseDto.certificationFail();
+        if (userRepository.findByUserNickname(nickName) != null)
+            throw new BadRequestException(ErrorCode.NICKNAME_DUPLICATED);
 
-            boolean isMatched = certification.getCertificationEmail().equals(email)
-                    && certification.getCertificationNumber().equals(certificationNumber);
-            if (!isMatched)
-                return SignUpResponseDto.certificationFail();
+        User userMail = userRepository.findByUserEmail(email);
 
-            User user = User.builder()
-                    .userId(userId)
-                    .password(encodedPassword)
-                    .nickname(dto.getNickName())
-                    .email(email)
-                    .role("ROLE_USER")
-                    .profileImage(dto.getProfileImage())
-                    .build();
-            
-            userRepository.save(user);
+        if (userMail == null) throw new BadRequestException(ErrorCode.CERTIFICATION_FAIL);
 
-            certificationRepository.deleteByCertificationUserEmail(email);
+        boolean isMatched = userMail.getEmail().equals(email)
+                && userMail.getCertification().getCertificationNumber().equals(certificationNumber);
+        if (!isMatched) throw new BadRequestException(ErrorCode.CERTIFICATION_MISSMATCHING);
 
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-        return SignUpResponseDto.success();
+        // User user = User.builder()
+        //         .userId(userId)
+        //         .password(encodedPassword)
+        //         .nickname(dto.getNickName())
+        //         .email(email)
+        //         .role("ROLE_USER")
+        //         .profileImage(dto.getProfileImage())
+        //         .build();
+        
+        userRepository.save(user);
+        certificationRepository.deleteByCertificationUserEmail(email);
     }
 
     @Override
@@ -168,8 +164,8 @@ public class AuthServiceImpl implements AuthService{
     public ResponseEntity<? super ChangeNicknameResponseDto> changeNickname(String userId,
             ChangeNicknameRequestDto dto) {
         try {
-            boolean isNicknameExist = userRepository.existsByUserNickname(dto.getNewNickname());
-            if (isNicknameExist) return ChangeNicknameResponseDto.duplicateNickname();
+            User userNickname = userRepository.findByUserNickname(dto.getNewNickname());
+            if (userNickname != null) throw new BadRequestException(ErrorCode.NICKNAME_DUPLICATED);
 
             User user = userRepository.findByUserId(userId);
             if (user == null) return ResponseDto.validationFail();

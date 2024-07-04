@@ -4,8 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.creativedesignproject.kumoh_board_backend.Auth.domain.User;
 import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.entity.User;
 import com.creativedesignproject.kumoh_board_backend.Auth.repository.UserRepository;
 import com.creativedesignproject.kumoh_board_backend.Board.dto.request.PatchBoardRequestDto;
 import com.creativedesignproject.kumoh_board_backend.Board.dto.request.PostBoardRequestDto;
