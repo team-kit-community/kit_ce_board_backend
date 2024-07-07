@@ -15,6 +15,8 @@ public enum ErrorCode {
     CERTIFICATION_FAIL(HttpStatus.BAD_REQUEST, "CERTIFICATION_FAIL", "인증번호를 재전송 해주세요."),
     CERTIFICATION_MISSMATCHING(HttpStatus.BAD_REQUEST, "CERTIFICATION_MISSMATCHING", "인증번호가 일치하지 않습니다."),
     VALIDATION_FAIL(HttpStatus.BAD_REQUEST, "VALIDATION_FAIL", "검증이 실패하였습니다."),
+    USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다."),
+    PASSWORD_NOT_MATCHED(HttpStatus.BAD_REQUEST, "PASSWORD_NOT_MATCHED", "비밀번호가 일치하지 않습니다."),
     ;
     private HttpStatus status;
     private final String code;

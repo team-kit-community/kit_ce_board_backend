@@ -16,12 +16,12 @@ public class CertificationRepository {
         em.persist(certification);
     }
 
-    public Certification findByUserEmail(String email) {
+    public Certification findByEmail(String email) {
         return em.find(Certification.class, email);
     }
 
     public void deleteByCertificationUserEmail(String email) {
-        em.createQuery("delete from Certification c where c.certificationEmail = :email")
+        em.createQuery("delete from Certification c where c.user.email = :email")
                 .setParameter("email", email)
                 .executeUpdate();
     }

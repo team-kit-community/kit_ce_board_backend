@@ -1,32 +1,16 @@
 package com.creativedesignproject.kumoh_board_backend.Auth.dto.response;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
-import com.creativedesignproject.kumoh_board_backend.Common.ResponseCode;
-import com.creativedesignproject.kumoh_board_backend.Common.ResponseMessage;
-
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class SignInResponseDto extends ResponseDto {
-
+public class SignInResponseDto{
     private String token;
     private int expirationTime; // 토큰 만료시간
 
-    private SignInResponseDto(String token) {
-        super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
+    @Builder
+    public SignInResponseDto(String token) {
         this.token = token;
         this.expirationTime = 3600;
-    }
-
-    public static ResponseEntity<SignInResponseDto> success(String token) {
-        SignInResponseDto responseBody = new SignInResponseDto(token);
-        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
-    }
-
-    public static ResponseEntity<ResponseDto> signInFail() {
-        ResponseDto responseBody = new ResponseDto(ResponseCode.SIGN_IN_FAIL, ResponseMessage.SIGN_IN_FAIL);
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
     }
 }

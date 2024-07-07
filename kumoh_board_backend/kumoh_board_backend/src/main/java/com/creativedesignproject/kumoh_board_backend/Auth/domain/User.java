@@ -1,10 +1,12 @@
 package com.creativedesignproject.kumoh_board_backend.Auth.domain;
 
 import com.creativedesignproject.kumoh_board_backend.Common.BaseEntity.BaseTimeEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,7 +40,8 @@ public class User extends BaseTimeEntity {
     @Column(name = "profile_image")
     private String profile_image;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "certification_id")
     private Certification certification;
 
@@ -59,5 +62,21 @@ public class User extends BaseTimeEntity {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profile_image = profileImage;
+    }
+
+    public void setUserId(String userId) {
+        this.user_id = userId;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

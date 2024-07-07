@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class UserIdCheckRequestDto {
-    @NotBlank
+    @NotBlank(message = "아이디는 필수 입력 값입니다.")
     private String userId;
 }

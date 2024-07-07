@@ -1,6 +1,7 @@
 package com.creativedesignproject.kumoh_board_backend.Auth.repository;
 
 import org.springframework.stereotype.Repository;
+import java.util.List;
 
 import com.creativedesignproject.kumoh_board_backend.Auth.domain.User;
 
@@ -19,10 +20,13 @@ public class UserRepository {
     }
 
     public User findByUserEmail(String email) {
-        return em.createQuery("select u from User u where u.email = :email", User.class)
+        List<User> users = em.createQuery("select u from User u where u.email = :email", User.class)
                 .setParameter("email", email)
-                .getSingleResult();
-
+                .getResultList();
+        if (users.isEmpty()) {
+            return null;
+        }
+        return users.get(0);
     }
 
     public User findByUserNickname(String nickName) {
