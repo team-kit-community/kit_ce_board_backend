@@ -1,9 +1,9 @@
-package com.creativedesignproject.kumoh_board_backend.Auth.infrastructure;
+package com.creativedesignproject.kumoh_board_backend.auth.infrastructure;
 
 import org.springframework.stereotype.Component;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.domain.VerificationCode;
-import com.creativedesignproject.kumoh_board_backend.Auth.service.VerificationCodeProvider;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.VerificationCode;
+import com.creativedesignproject.kumoh_board_backend.auth.service.VerificationCodeProvider;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;

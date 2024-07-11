@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.CrawlingBoard.controller;
+package com.creativedesignproject.kumoh_board_backend.crawlingboard.controller;
 
 import java.io.IOException;
 
@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.service.CrawlingBoardService;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.service.CrawlingService;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.CrawlingContestFromWevityResponseDto;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.CrawlingActivitiesFromWevityResponseDto;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.CrawlingContestFromLinkCareerResponseDto;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.CrawlingActivitiesFromLinkCareerResponseDto;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.GetCrawlingDetailBoardResponseDto;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.dto.response.CrawlingActivitiesFromLinkCareerResponseDto;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.dto.response.CrawlingActivitiesFromWevityResponseDto;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.dto.response.CrawlingContestFromLinkCareerResponseDto;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.dto.response.CrawlingContestFromWevityResponseDto;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.dto.response.GetCrawlingDetailBoardResponseDto;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.service.CrawlingBoardService;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.service.CrawlingService;
 
 import lombok.RequiredArgsConstructor;
 

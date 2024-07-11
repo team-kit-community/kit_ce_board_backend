@@ -1,20 +1,16 @@
-package com.creativedesignproject.kumoh_board_backend.Board.dto.request;
+package com.creativedesignproject.kumoh_board_backend.board.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 public class PostBoardRequestDto {
-    @NotBlank
+    @NotBlank(message = "제목은 필수 입력 값입니다.")
     private String title;
 
-    @NotBlank
+    @NotBlank(message = "내용은 필수 입력 값입니다.")
     private String content;
 
     private List<String> boardImageList;

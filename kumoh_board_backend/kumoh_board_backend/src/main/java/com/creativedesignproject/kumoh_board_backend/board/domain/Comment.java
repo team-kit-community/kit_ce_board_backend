@@ -1,10 +1,10 @@
-package com.creativedesignproject.kumoh_board_backend.Board.entity;
+package com.creativedesignproject.kumoh_board_backend.board.domain;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.domain.User;
-import com.creativedesignproject.kumoh_board_backend.Common.BaseEntity.BaseEntity;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.User;
+import com.creativedesignproject.kumoh_board_backend.common.baseentity.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;

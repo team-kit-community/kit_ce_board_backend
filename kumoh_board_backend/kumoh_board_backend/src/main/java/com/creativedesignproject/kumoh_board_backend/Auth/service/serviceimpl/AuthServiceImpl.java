@@ -1,28 +1,28 @@
-package com.creativedesignproject.kumoh_board_backend.Auth.service.serviceimpl;
+package com.creativedesignproject.kumoh_board_backend.auth.service.serviceimpl;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.domain.Certification;
-import com.creativedesignproject.kumoh_board_backend.Auth.domain.User;
-import com.creativedesignproject.kumoh_board_backend.Auth.domain.VerificationCode;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.ChangeNicknameRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.ChangePasswordRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.EmailCertificationRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.SignInRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.SignUpRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.UserIdCheckRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.SignInResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.provider.JwtProvider;
-import com.creativedesignproject.kumoh_board_backend.Auth.repository.CertificationRepository;
-import com.creativedesignproject.kumoh_board_backend.Auth.repository.UserRepository;
-import com.creativedesignproject.kumoh_board_backend.Auth.service.AuthService;
-import com.creativedesignproject.kumoh_board_backend.Auth.service.MailClient;
-import com.creativedesignproject.kumoh_board_backend.Auth.service.VerificationCodeProvider;
-import com.creativedesignproject.kumoh_board_backend.Common.exception.BadRequestException;
-import com.creativedesignproject.kumoh_board_backend.Common.exception.ErrorCode;
+import com.creativedesignproject.kumoh_board_backend.common.exception.BadRequestException;
+import com.creativedesignproject.kumoh_board_backend.common.exception.ErrorCode;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.Certification;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.User;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.VerificationCode;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.ChangeNicknameRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.ChangePasswordRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.EmailCertificationRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.SignInRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.SignUpRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.UserIdCheckRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.response.SignInResponseDto;
+import com.creativedesignproject.kumoh_board_backend.auth.provider.JwtProvider;
+import com.creativedesignproject.kumoh_board_backend.auth.repository.CertificationRepository;
+import com.creativedesignproject.kumoh_board_backend.auth.repository.UserRepository;
+import com.creativedesignproject.kumoh_board_backend.auth.service.AuthService;
+import com.creativedesignproject.kumoh_board_backend.auth.service.MailClient;
+import com.creativedesignproject.kumoh_board_backend.auth.service.VerificationCodeProvider;
 
 import lombok.RequiredArgsConstructor;
 

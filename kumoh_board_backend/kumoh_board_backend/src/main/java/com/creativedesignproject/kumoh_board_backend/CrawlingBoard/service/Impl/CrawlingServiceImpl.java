@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.CrawlingBoard.service.Impl;
+package com.creativedesignproject.kumoh_board_backend.crawlingboard.service.impl;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -23,17 +23,17 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.common.RobustWebDriver;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.common.RobustWebElement;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.CrawlingActivities;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.CrawlingContests;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.LinkCareerContests;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.repository.CrawlingActivitiesRepository;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.repository.CrawlingContestsRepository;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.repository.LinkCareerActivitiesRepository;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.repository.LinkCareerContestsRepository;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.service.CrawlingService;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.LinkCareerActivities;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.common.RobustWebDriver;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.common.RobustWebElement;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.CrawlingActivities;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.CrawlingContests;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.LinkCareerActivities;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.LinkCareerContests;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.repository.CrawlingActivitiesRepository;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.repository.CrawlingContestsRepository;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.repository.LinkCareerActivitiesRepository;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.repository.LinkCareerContestsRepository;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.service.CrawlingService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

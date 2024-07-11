@@ -1,10 +1,10 @@
-package com.creativedesignproject.kumoh_board_backend.Board.entity;
+package com.creativedesignproject.kumoh_board_backend.board.domain;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.domain.User;
+import com.creativedesignproject.kumoh_board_backend.common.baseentity.BaseTimeEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,24 +13,22 @@ import jakarta.persistence.ManyToOne;
 import lombok.Builder;
 import lombok.Getter;
 
-@Entity
 @Getter
-public class Favorite {
+@Entity
+public class Image extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "favorite_id")
+    @Column(name = "image_id")
     private Long id;
+    
+    private String url;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "post_id")
+    @JsonIgnore
     private Post post;
 
     @Builder
-    public Favorite(User user, Post post) {
-        this.user = user;
-        this.post = post;
+    public Image(String url) {
+        this.url = url;
     }
 }

@@ -1,6 +1,6 @@
-package com.creativedesignproject.kumoh_board_backend.Common.util;
+package com.creativedesignproject.kumoh_board_backend.common.util;
 
-import com.creativedesignproject.kumoh_board_backend.Common.exception.ValidException;
+import com.creativedesignproject.kumoh_board_backend.common.exception.ValidException;
 
 public final class Validator {
     private Validator() {}

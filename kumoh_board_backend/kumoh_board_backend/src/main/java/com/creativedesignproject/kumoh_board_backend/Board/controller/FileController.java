@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Board.controller;
+package com.creativedesignproject.kumoh_board_backend.board.controller;
 
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.creativedesignproject.kumoh_board_backend.Board.service.FileService;
+import com.creativedesignproject.kumoh_board_backend.board.service.FileService;
 
 import lombok.RequiredArgsConstructor;
 

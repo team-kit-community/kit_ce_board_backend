@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Common;
+package com.creativedesignproject.kumoh_board_backend.common;
 
 public interface ResponseCode {
     //Http 200

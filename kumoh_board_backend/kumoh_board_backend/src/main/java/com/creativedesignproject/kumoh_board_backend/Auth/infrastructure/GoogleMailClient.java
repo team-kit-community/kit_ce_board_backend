@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Auth.infrastructure;
+package com.creativedesignproject.kumoh_board_backend.auth.infrastructure;
 
 import java.util.function.Consumer;
 
@@ -10,7 +10,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.service.MailClient;
+import com.creativedesignproject.kumoh_board_backend.auth.service.MailClient;
 
 @Component
 @Profile("local")

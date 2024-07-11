@@ -1,9 +1,9 @@
-package com.creativedesignproject.kumoh_board_backend.Auth.domain;
+package com.creativedesignproject.kumoh_board_backend.auth.domain;
 
 import java.util.regex.Pattern;
 
-import com.creativedesignproject.kumoh_board_backend.Common.exception.ValidException;
-import com.creativedesignproject.kumoh_board_backend.Common.util.Validator;
+import com.creativedesignproject.kumoh_board_backend.common.exception.ValidException;
+import com.creativedesignproject.kumoh_board_backend.common.util.Validator;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

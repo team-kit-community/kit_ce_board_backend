@@ -1,13 +1,13 @@
-package com.creativedesignproject.kumoh_board_backend.Category.service;
+package com.creativedesignproject.kumoh_board_backend.category.service;
 
 import org.springframework.http.ResponseEntity;
 
-import com.creativedesignproject.kumoh_board_backend.Category.dto.request.UpdateCategoryRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Category.dto.response.RegisterCategoryResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Category.entity.Category;
-import com.creativedesignproject.kumoh_board_backend.Category.dto.response.UpdateCategoryResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Category.dto.response.DeleteCategoryResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Category.dto.response.GetCategoryListResponseDto;
+import com.creativedesignproject.kumoh_board_backend.category.domain.Category;
+import com.creativedesignproject.kumoh_board_backend.category.dto.request.UpdateCategoryRequestDto;
+import com.creativedesignproject.kumoh_board_backend.category.dto.response.DeleteCategoryResponseDto;
+import com.creativedesignproject.kumoh_board_backend.category.dto.response.GetCategoryListResponseDto;
+import com.creativedesignproject.kumoh_board_backend.category.dto.response.RegisterCategoryResponseDto;
+import com.creativedesignproject.kumoh_board_backend.category.dto.response.UpdateCategoryResponseDto;
 
 public interface CategoryService {
     ResponseEntity<? super RegisterCategoryResponseDto> registerCategory(Category categoryEntity);

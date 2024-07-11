@@ -1,11 +1,12 @@
-package com.creativedesignproject.kumoh_board_backend.Category.repository;
+package com.creativedesignproject.kumoh_board_backend.category.repository;
 
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.creativedesignproject.kumoh_board_backend.Board.repository.query.PostDto;
-import com.creativedesignproject.kumoh_board_backend.Category.entity.Category;
+import com.creativedesignproject.kumoh_board_backend.board.repository.query.CategoryPostDto;
+import com.creativedesignproject.kumoh_board_backend.board.repository.query.PostDto;
+import com.creativedesignproject.kumoh_board_backend.category.domain.Category;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +22,16 @@ public class CategoryRepository {
                 .getResultList().size() > 0;
     }
 
-    public boolean existsById(Long category_id) {
+    public boolean existsByCategoryId(Long category_id) {
         return em.createQuery("select c from Category c where c.id = :category_id", Category.class)
                 .setParameter("category_id", category_id)
                 .getResultList().size() > 0;
+    }
+
+    public List<CategoryPostDto> findAllCategoryPostDtos() {
+        return em.createQuery("select new com.creativedesignproject.kumoh_board_backend.board.repository.query.CategoryPostDto(c.name, p.title, p.contents, p.favoriteCount, p.commentCount, p.viewCount, p.user.userName, p.updatedDate) from Category c join Post p on c.id = p.category.id order by p.updatedDate desc", CategoryPostDto.class)
+                .setMaxResults(4)
+                .getResultList();
     }
 
     public List<PostDto> selectRecentPostsByCategory(Long categoryId) {

@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Board.resultSet;
+package com.creativedesignproject.kumoh_board_backend.board.resultSet;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Auth.service;
+package com.creativedesignproject.kumoh_board_backend.auth.service;
 
 import java.util.function.Consumer;
 

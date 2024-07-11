@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Auth.dto.request;
+package com.creativedesignproject.kumoh_board_backend.auth.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

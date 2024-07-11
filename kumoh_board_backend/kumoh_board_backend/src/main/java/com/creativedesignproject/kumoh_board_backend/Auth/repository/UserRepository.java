@@ -1,9 +1,10 @@
-package com.creativedesignproject.kumoh_board_backend.Auth.repository;
+package com.creativedesignproject.kumoh_board_backend.auth.repository;
 
 import org.springframework.stereotype.Repository;
-import java.util.List;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.domain.User;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.User;
+
+import java.util.List;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;

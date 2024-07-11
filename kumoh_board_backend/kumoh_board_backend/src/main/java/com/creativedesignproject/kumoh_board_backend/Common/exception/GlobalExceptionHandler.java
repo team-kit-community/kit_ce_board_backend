@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Common.exception;
+package com.creativedesignproject.kumoh_board_backend.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity;
+package com.creativedesignproject.kumoh_board_backend.crawlingboard.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

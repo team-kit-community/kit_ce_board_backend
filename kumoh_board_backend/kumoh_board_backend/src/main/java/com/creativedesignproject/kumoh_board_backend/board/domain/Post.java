@@ -1,12 +1,16 @@
-package com.creativedesignproject.kumoh_board_backend.Board.entity;
+package com.creativedesignproject.kumoh_board_backend.board.domain;
 
 import lombok.Builder;
 import lombok.Getter;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.domain.User;
-import com.creativedesignproject.kumoh_board_backend.Category.entity.Category;
-import com.creativedesignproject.kumoh_board_backend.Common.BaseEntity.BaseEntity;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.creativedesignproject.kumoh_board_backend.auth.domain.User;
+import com.creativedesignproject.kumoh_board_backend.category.domain.Category;
+import com.creativedesignproject.kumoh_board_backend.common.baseentity.BaseEntity;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,6 +19,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 @Getter
@@ -46,6 +51,9 @@ public class Post extends BaseEntity{
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Image> images = new ArrayList<>();
+
     public void increaseViewCount() {
         this.view_count++;
     }
@@ -67,10 +75,23 @@ public class Post extends BaseEntity{
     }
 
     @Builder
-    public Post(String title, String contents, User user, Category category) {
+    public Post(String title, String contents, User user, Category category, List<Image> images) {
         this.title = title;
         this.contents = contents;
         this.user = user;
         this.category = category;
+        this.images = images;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContents(String contents) {
+        this.contents = contents;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
     }
 }

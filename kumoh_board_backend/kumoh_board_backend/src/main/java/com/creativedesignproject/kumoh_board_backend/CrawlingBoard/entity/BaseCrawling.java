@@ -1,6 +1,6 @@
-package com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity;
+package com.creativedesignproject.kumoh_board_backend.crawlingboard.entity;
 
-import com.creativedesignproject.kumoh_board_backend.Common.BaseEntity.BaseEntity;
+import com.creativedesignproject.kumoh_board_backend.common.baseentity.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

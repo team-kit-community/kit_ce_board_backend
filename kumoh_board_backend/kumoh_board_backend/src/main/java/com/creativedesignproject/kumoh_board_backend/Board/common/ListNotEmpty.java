@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Board.common;
+package com.creativedesignproject.kumoh_board_backend.board.common;
 
 import jakarta.validation.Payload;
 

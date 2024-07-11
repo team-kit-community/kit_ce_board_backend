@@ -1,12 +1,12 @@
-package com.creativedesignproject.kumoh_board_backend.CrawlingBoard.service;
-
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.CrawlingActivitiesFromLinkCareerResponseDto;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.CrawlingActivitiesFromWevityResponseDto;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.CrawlingContestFromLinkCareerResponseDto;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.CrawlingContestFromWevityResponseDto;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.GetCrawlingDetailBoardResponseDto;
+package com.creativedesignproject.kumoh_board_backend.crawlingboard.service;
 
 import org.springframework.http.ResponseEntity;
+
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.dto.response.CrawlingActivitiesFromLinkCareerResponseDto;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.dto.response.CrawlingActivitiesFromWevityResponseDto;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.dto.response.CrawlingContestFromLinkCareerResponseDto;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.dto.response.CrawlingContestFromWevityResponseDto;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.dto.response.GetCrawlingDetailBoardResponseDto;
 
 public interface CrawlingBoardService {
     ResponseEntity<? super CrawlingContestFromWevityResponseDto> crawlContestsFromWevityList();

@@ -1,14 +1,13 @@
-package com.creativedesignproject.kumoh_board_backend.Board.repository;
+package com.creativedesignproject.kumoh_board_backend.board.repository;
 
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.creativedesignproject.kumoh_board_backend.Board.entity.Post;
-import com.creativedesignproject.kumoh_board_backend.Board.repository.query.PostDto;
+import com.creativedesignproject.kumoh_board_backend.board.domain.Post;
+import com.creativedesignproject.kumoh_board_backend.board.repository.query.PostDto;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +19,13 @@ public class PostRepository {
 
     public Post findById(Long post_number) {
         return em.find(Post.class, post_number);
+    }
+
+    public Post findByCategoryIdAndPostNumber(Long category_id, Long post_number) {
+        return em.createQuery("select p from Post p where p.category.id = :category_id and p.id = :post_number", Post.class)
+                .setParameter("category_id", category_id)
+                .setParameter("post_number", post_number)
+                .getSingleResult();
     }
 
     public boolean existsByCategoryIdAndPostNumber(Long category_id, Long post_number) {
@@ -58,23 +64,15 @@ public class PostRepository {
     }
 
     public List<PostDto> selectLatestBoardList(Long category_id) {
-        return em.createQuery("select new com.creativedesignproject.kumoh_board_backend.Board.repository.query.PostDto(p.title, p.contents, p.favorite_count, p.comment_count, p.view_count, p.user.nickname, p.category.name, p.createdDate) from Post p where p.category.id = :category_id order by p.id desc", PostDto.class)
+        return em.createQuery("select new com.creativedesignproject.kumoh_board_backend.Board.repository.query.PostDto(p.title, p.contents, p.favorite_count, p.comment_count, p.view_count, p.user.nickname, p.category.name, p.updatedDate) from Post p where p.category.id = :category_id order by p.updatedDate desc", PostDto.class)
                 .setParameter("category_id", category_id)
                 .getResultList();
     }
 
-    public List<PostDto> selectTop3BoardList(String sevenDaysAgo, Long category_id) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime sevenDaysAgoDate = LocalDateTime.parse(sevenDaysAgo, formatter);
-        return em.createQuery("select new com.creativedesignproject.kumoh_board_backend.Board.repository.query.PostDto(p.title, p.contents, p.favorite_count, p.comment_count, p.view_count, p.user.nickname, p.category.name, p.createdDate) from Post p where p.category.id = :category_id and p.createdDate >= :sevenDaysAgoDate order by p.favorite_count desc", PostDto.class)
+    public List<PostDto> selectTop3BoardList(LocalDateTime sevenDaysAgoDate, Long category_id) {
+        return em.createQuery("select new com.creativedesignproject.kumoh_board_backend.Board.repository.query.PostDto(p.title, p.contents, p.favorite_count, p.comment_count, p.view_count, p.user.nickname, p.category.name, p.updatedDate) from Post p where p.category.id = :category_id and p.updatedDate >= :sevenDaysAgoDate order by p.favorite_count desc", PostDto.class)
                 .setParameter("category_id", category_id)
                 .setParameter("sevenDaysAgoDate", sevenDaysAgoDate)
-                .getResultList();
-    }
-
-    public List<PostDto> selectTop3BoardList(Long category_id) {
-        return em.createQuery("select new com.creativedesignproject.kumoh_board_backend.Board.repository.query.PostDto(p.title, p.contents, p.favorite_count, p.comment_count, p.view_count, p.user.nickname, p.category.name, p.createdDate) from Post p where p.category.id = :category_id order by p.favorite_count desc", PostDto.class)
-                .setParameter("category_id", category_id)
                 .getResultList();
     }
 

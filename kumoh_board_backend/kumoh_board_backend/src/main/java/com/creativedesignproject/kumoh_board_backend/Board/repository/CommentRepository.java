@@ -1,10 +1,10 @@
-package com.creativedesignproject.kumoh_board_backend.Board.repository;
+package com.creativedesignproject.kumoh_board_backend.board.repository;
 
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.creativedesignproject.kumoh_board_backend.Board.entity.Comment;
+import com.creativedesignproject.kumoh_board_backend.board.domain.Comment;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;

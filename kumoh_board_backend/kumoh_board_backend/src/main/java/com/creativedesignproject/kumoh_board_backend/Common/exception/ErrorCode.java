@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Common.exception;
+package com.creativedesignproject.kumoh_board_backend.common.exception;
 
 import org.springframework.http.HttpStatus;
 
@@ -16,7 +16,14 @@ public enum ErrorCode {
     CERTIFICATION_MISSMATCHING(HttpStatus.BAD_REQUEST, "CERTIFICATION_MISSMATCHING", "인증번호가 일치하지 않습니다."),
     VALIDATION_FAIL(HttpStatus.BAD_REQUEST, "VALIDATION_FAIL", "검증이 실패하였습니다."),
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다."),
+    NOT_EXISTED_USER(HttpStatus.BAD_REQUEST, "NOT_EXISTED_USER", "존재하지 않는 사용자입니다."),
     PASSWORD_NOT_MATCHED(HttpStatus.BAD_REQUEST, "PASSWORD_NOT_MATCHED", "비밀번호가 일치하지 않습니다."),
+    NOT_EXISTED_CATEGORY(HttpStatus.BAD_REQUEST, "NOT_EXISTED_CATEGORY", "존재하지 않는 카테고리입니다."),
+    NOT_EXISTED_POST(HttpStatus.BAD_REQUEST, "NOT_EXISTED_POST", "존재하지 않는 게시글입니다."),
+    NOT_EXISTED_COMMENT(HttpStatus.BAD_REQUEST, "NOT_EXISTED_COMMENT", "존재하지 않는 댓글입니다."),
+
+    //401
+    NO_PERMISSION(HttpStatus.UNAUTHORIZED, "NO_PERMISSION", "권한이 없습니다."),
     ;
     private HttpStatus status;
     private final String code;

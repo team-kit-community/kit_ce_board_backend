@@ -1,6 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Board.dto.object;
-
-import com.creativedesignproject.kumoh_board_backend.Board.repository.query.FavoriteListDto;
+package com.creativedesignproject.kumoh_board_backend.board.dto.object;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.creativedesignproject.kumoh_board_backend.board.repository.query.FavoriteListDto;
 
 
 @Getter

@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Category.entity;
+package com.creativedesignproject.kumoh_board_backend.category.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,6 +1,6 @@
-package com.creativedesignproject.kumoh_board_backend.Board.entity;
+package com.creativedesignproject.kumoh_board_backend.board.domain;
 
-import com.creativedesignproject.kumoh_board_backend.Common.BaseEntity.BaseTimeEntity;
+import com.creativedesignproject.kumoh_board_backend.common.baseentity.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,22 +13,22 @@ import jakarta.persistence.ManyToOne;
 import lombok.Builder;
 import lombok.Getter;
 
-@Getter
 @Entity
-public class Image extends BaseTimeEntity {
+@Getter
+public class SubComment extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "image_id")
+    @Column(name = "subcomment_id")
     private Long id;
-    
+
+    private String content;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_number")
-    private Post post;
-    
-    private String url;
+    @JoinColumn(name = "comment_id")
+    private Comment parentComment;
 
     @Builder
-    public Image(Post post, String url) {
-        this.post = post;
-        this.url = url;
+    public SubComment(String content, Comment parentComment) {
+        this.content = content;
+        this.parentComment = parentComment;
     }
 }

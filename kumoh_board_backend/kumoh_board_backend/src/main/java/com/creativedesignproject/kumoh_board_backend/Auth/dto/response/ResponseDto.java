@@ -1,10 +1,10 @@
-package com.creativedesignproject.kumoh_board_backend.Auth.dto.response;
+package com.creativedesignproject.kumoh_board_backend.auth.dto.response;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.creativedesignproject.kumoh_board_backend.Common.ResponseCode;
-import com.creativedesignproject.kumoh_board_backend.Common.ResponseMessage;
+import com.creativedesignproject.kumoh_board_backend.common.ResponseCode;
+import com.creativedesignproject.kumoh_board_backend.common.ResponseMessage;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Category.service.Impl;
+package com.creativedesignproject.kumoh_board_backend.category.service.impl;
 
 import java.util.List;
 
@@ -6,15 +6,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Category.dto.request.UpdateCategoryRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Category.dto.response.DeleteCategoryResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Category.dto.response.GetCategoryListResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Category.dto.response.RegisterCategoryResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Category.dto.response.UpdateCategoryResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Category.entity.Category;
-import com.creativedesignproject.kumoh_board_backend.Category.repository.CategoryRepository;
-import com.creativedesignproject.kumoh_board_backend.Category.service.CategoryService;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.response.ResponseDto;
+import com.creativedesignproject.kumoh_board_backend.category.domain.Category;
+import com.creativedesignproject.kumoh_board_backend.category.dto.request.UpdateCategoryRequestDto;
+import com.creativedesignproject.kumoh_board_backend.category.dto.response.DeleteCategoryResponseDto;
+import com.creativedesignproject.kumoh_board_backend.category.dto.response.GetCategoryListResponseDto;
+import com.creativedesignproject.kumoh_board_backend.category.dto.response.RegisterCategoryResponseDto;
+import com.creativedesignproject.kumoh_board_backend.category.dto.response.UpdateCategoryResponseDto;
+import com.creativedesignproject.kumoh_board_backend.category.repository.CategoryRepository;
+import com.creativedesignproject.kumoh_board_backend.category.service.CategoryService;
 
 import lombok.RequiredArgsConstructor;
 

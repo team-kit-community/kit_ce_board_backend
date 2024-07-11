@@ -1,12 +1,12 @@
-package com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response;
+package com.creativedesignproject.kumoh_board_backend.crawlingboard.dto.response;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Common.ResponseCode;
-import com.creativedesignproject.kumoh_board_backend.Common.ResponseMessage;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.CrawlingPostDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.response.ResponseDto;
+import com.creativedesignproject.kumoh_board_backend.common.ResponseCode;
+import com.creativedesignproject.kumoh_board_backend.common.ResponseMessage;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.dto.CrawlingPostDto;
 
 import lombok.Getter;
 

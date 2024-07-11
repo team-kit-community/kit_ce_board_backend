@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Auth.controller;
+package com.creativedesignproject.kumoh_board_backend.auth.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.service.AuthService;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.ChangeNicknameRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.ChangePasswordRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.EmailCertificationRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.SignInRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.SignUpRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.UserIdCheckRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.SignInResponseDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.ChangeNicknameRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.ChangePasswordRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.EmailCertificationRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.SignInRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.SignUpRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.UserIdCheckRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.response.SignInResponseDto;
+import com.creativedesignproject.kumoh_board_backend.auth.service.AuthService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

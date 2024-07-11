@@ -1,6 +1,6 @@
-package com.creativedesignproject.kumoh_board_backend.Board.entity;
+package com.creativedesignproject.kumoh_board_backend.board.domain;
 
-import com.creativedesignproject.kumoh_board_backend.Common.BaseEntity.BaseEntity;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,20 +15,22 @@ import lombok.Getter;
 
 @Entity
 @Getter
-public class SubComment extends BaseEntity {
+public class Favorite {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "subcomment_id")
+    @Column(name = "favorite_id")
     private Long id;
 
-    private String content;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id")
-    private Comment parentComment;
+    @JoinColumn(name = "post_id")
+    private Post post;
 
     @Builder
-    public SubComment(String content, Comment parentComment) {
-        this.content = content;
-        this.parentComment = parentComment;
+    public Favorite(User user, Post post) {
+        this.user = user;
+        this.post = post;
     }
 }

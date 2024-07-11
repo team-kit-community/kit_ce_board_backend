@@ -1,8 +1,8 @@
-package com.creativedesignproject.kumoh_board_backend.Board.repository.query;
+package com.creativedesignproject.kumoh_board_backend.board.repository.query;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class FavoriteListDto {
     private String userId;
 }

@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Config;
+package com.creativedesignproject.kumoh_board_backend.config;
 
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +15,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.filter.JwtAuthenticationFilter;
+import com.creativedesignproject.kumoh_board_backend.auth.filter.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
 

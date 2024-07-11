@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.CrawlingBoard.service;
+package com.creativedesignproject.kumoh_board_backend.crawlingboard.service;
 
 import java.io.IOException;
 
