@@ -21,6 +21,7 @@ public enum ErrorCode {
     NOT_EXISTED_CATEGORY(HttpStatus.BAD_REQUEST, "NOT_EXISTED_CATEGORY", "존재하지 않는 카테고리입니다."),
     NOT_EXISTED_POST(HttpStatus.BAD_REQUEST, "NOT_EXISTED_POST", "존재하지 않는 게시글입니다."),
     NOT_EXISTED_COMMENT(HttpStatus.BAD_REQUEST, "NOT_EXISTED_COMMENT", "존재하지 않는 댓글입니다."),
+    DUPLICATED_CATEGORY_NAME(HttpStatus.BAD_REQUEST, "DUPLICATED_CATEGORY_NAME", "중복된 카테고리 이름입니다."),
 
     //401
     NO_PERMISSION(HttpStatus.UNAUTHORIZED, "NO_PERMISSION", "권한이 없습니다."),

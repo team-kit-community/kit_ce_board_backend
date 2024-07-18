@@ -2,22 +2,19 @@ package com.creativedesignproject.kumoh_board_backend.category.service.impl;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.creativedesignproject.kumoh_board_backend.auth.dto.response.ResponseDto;
 import com.creativedesignproject.kumoh_board_backend.category.domain.Category;
+import com.creativedesignproject.kumoh_board_backend.category.dto.request.CategoryDto;
 import com.creativedesignproject.kumoh_board_backend.category.dto.request.UpdateCategoryRequestDto;
-import com.creativedesignproject.kumoh_board_backend.category.dto.response.DeleteCategoryResponseDto;
-import com.creativedesignproject.kumoh_board_backend.category.dto.response.GetCategoryListResponseDto;
-import com.creativedesignproject.kumoh_board_backend.category.dto.response.RegisterCategoryResponseDto;
-import com.creativedesignproject.kumoh_board_backend.category.dto.response.UpdateCategoryResponseDto;
 import com.creativedesignproject.kumoh_board_backend.category.repository.CategoryRepository;
 import com.creativedesignproject.kumoh_board_backend.category.service.CategoryService;
+import com.creativedesignproject.kumoh_board_backend.common.exception.BadRequestException;
+import com.creativedesignproject.kumoh_board_backend.common.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
-
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,65 +24,46 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Transactional // 기본 값은 write
     @Override // 값 바꾸기
-    public ResponseEntity<? super RegisterCategoryResponseDto> registerCategory(Category categoryEntity) {
-        try {
-            boolean isExistedCategory = categoryRepository.existsByName(categoryEntity.getName());
-            if(isExistedCategory) return RegisterCategoryResponseDto.DuplicatedCategoryName();
+    public void registerCategory(Category categoryEntity) {
+        boolean isExistedCategory = categoryRepository.existsByName(categoryEntity.getName());
+        if(isExistedCategory) throw new BadRequestException(ErrorCode.DUPLICATED_CATEGORY_NAME);
 
-            categoryRepository.save(categoryEntity);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-
-        return RegisterCategoryResponseDto.success();
+        categoryRepository.save(categoryEntity);
     }
 
     @Transactional // 기본 값은 write
     @Override // 값 바꾸기
-    public ResponseEntity<? super UpdateCategoryResponseDto> updateCategory(Long category_id, UpdateCategoryRequestDto dto) {
-        try {
-            Category category = categoryRepository.findById(category_id);
-            if(category == null) return UpdateCategoryResponseDto.notExistedCategory();
+    public void updateCategory(Long category_id, UpdateCategoryRequestDto dto) {
+        Category category = categoryRepository.findById(category_id);
+        if(category == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_CATEGORY);
 
-            boolean isExistedCategory = categoryRepository.existsByName(dto.getName());
-            if(isExistedCategory) return UpdateCategoryResponseDto.DuplicatedCategoryName();
+        boolean isExistedCategory = categoryRepository.existsByName(dto.getName());
+        if(isExistedCategory) throw new BadRequestException(ErrorCode.DUPLICATED_CATEGORY_NAME);
 
-            category.setName(dto.getName()); // 트랜젝션 내에 있는 영속성 context에 변경이 일어나면 자동으로 플러시됨.
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-        return UpdateCategoryResponseDto.success();
+        category.setName(dto.getName()); // 트랜젝션 내에 있는 영속성 context에 변경이 일어나면 자동으로 플러시됨.
     }
 
     @Transactional // 기본 값은 write
     @Override // 값 바꾸기
-    public ResponseEntity<? super DeleteCategoryResponseDto> deleteCategoryName(Long category_id) {
-        try {
-            Category category = categoryRepository.findById(category_id);
-            if(category == null) return DeleteCategoryResponseDto.notExistedCategory();
+    public void deleteCategoryName(Long category_id) {
+        Category category = categoryRepository.findById(category_id);
+        if(category == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_CATEGORY);
 
-            categoryRepository.delete(category);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-
-        return DeleteCategoryResponseDto.success();
+        categoryRepository.delete(category);
     }
 
     @Override // 값 읽기
-    public ResponseEntity<? super GetCategoryListResponseDto> getCategoryList() {
-        List<Category> categoryList = null;
-        
-        try {
-            categoryList = categoryRepository.findAll();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
+    public List<CategoryDto> getCategoryList() {
+        List<Category> categoryList = categoryRepository.findAll();
+        List<CategoryDto> categoryDtoList = convertToDTO(categoryList);
+        return categoryDtoList;
+    }
 
-        return GetCategoryListResponseDto.success(categoryList);
+    private List<CategoryDto> convertToDTO(List<Category> categoryList) {
+        return categoryList.stream()
+                .map(category -> CategoryDto.builder()
+                        .name(category.getName())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

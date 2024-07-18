@@ -17,8 +17,9 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
     private final UserService userService;
     
-    @GetMapping("")
-    public ResponseEntity<? super GetSignInUserResponseDto> getSignInUser(@AuthenticationPrincipal String userId) {
-        return userService.getSignInUser(userId);
+    @GetMapping("/info")
+    public ResponseEntity<GetSignInUserResponseDto> getSignInUser(@AuthenticationPrincipal String userId) {
+        GetSignInUserResponseDto responseDto = userService.getSignInUser(userId);
+        return ResponseEntity.ok().body(responseDto);
     }
 }
