@@ -2,8 +2,8 @@ package com.creativedesignproject.kumoh_board_backend.crawlingboard.service.impl
 
 import java.io.IOException;
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+// import java.time.LocalDate;
+// import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -384,18 +384,18 @@ public class CrawlingServiceImpl implements CrawlingService {
         driver.quit();
     }
 
-    private LocalDate parseDate(String date) {
-        if (date.startsWith("D-")) {
-            int days = Integer.parseInt(date.substring(2));
-            return LocalDate.now().plusDays(days);
-        } else if (date.startsWith("D+")) {
-            int days = Integer.parseInt(date.substring(2));
-            return LocalDate.now().minusDays(days);
-        } else if (date.equals("오늘마감")) {
-            return LocalDate.now(); // "오늘 마감"을 오늘 날짜로 처리
-        } else {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            return LocalDate.parse(date, formatter);
-        }
-    }
+    // private LocalDate parseDate(String date) {
+    //     if (date.startsWith("D-")) {
+    //         int days = Integer.parseInt(date.substring(2));
+    //         return LocalDate.now().plusDays(days);
+    //     } else if (date.startsWith("D+")) {
+    //         int days = Integer.parseInt(date.substring(2));
+    //         return LocalDate.now().minusDays(days);
+    //     } else if (date.equals("오늘마감")) {
+    //         return LocalDate.now(); // "오늘 마감"을 오늘 날짜로 처리
+    //     } else {
+    //         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    //         return LocalDate.parse(date, formatter);
+    //     }
+    // }
 }

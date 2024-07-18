@@ -7,10 +7,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class BaseCrawling extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -35,8 +38,6 @@ public abstract class BaseCrawling extends BaseEntity {
     public void setUrl(String url) {
         this.url = url;
     }
-
-    protected BaseCrawling() {}
 
     public BaseCrawling(String title, String date, String url, String detailData) {
         this.title = title;

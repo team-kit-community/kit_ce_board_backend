@@ -2,11 +2,14 @@ package com.creativedesignproject.kumoh_board_backend.crawlingboard.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LinkCareerContests extends BaseCrawling {
     @Column(name = "image")
     private String image;

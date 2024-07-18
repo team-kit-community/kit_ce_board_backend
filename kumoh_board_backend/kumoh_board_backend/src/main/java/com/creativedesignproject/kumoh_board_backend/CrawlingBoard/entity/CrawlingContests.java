@@ -2,11 +2,14 @@ package com.creativedesignproject.kumoh_board_backend.crawlingboard.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CrawlingContests extends BaseCrawling {
     @Column(name = "field")
     private String field;
