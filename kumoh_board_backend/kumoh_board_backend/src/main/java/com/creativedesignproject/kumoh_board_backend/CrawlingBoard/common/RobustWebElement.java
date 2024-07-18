@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.CrawlingBoard.common;
+package com.creativedesignproject.kumoh_board_backend.crawlingboard.common;
 
 import java.util.ArrayList;
 import java.util.List;

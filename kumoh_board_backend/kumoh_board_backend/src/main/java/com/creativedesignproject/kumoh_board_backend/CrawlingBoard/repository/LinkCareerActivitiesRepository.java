@@ -1,8 +1,8 @@
-package com.creativedesignproject.kumoh_board_backend.CrawlingBoard.repository;
+package com.creativedesignproject.kumoh_board_backend.crawlingboard.repository;
 
 import org.springframework.stereotype.Repository;
 
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.LinkCareerActivities;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.LinkCareerActivities;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;

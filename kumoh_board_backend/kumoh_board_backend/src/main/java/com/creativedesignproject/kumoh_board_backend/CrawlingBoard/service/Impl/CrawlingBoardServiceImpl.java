@@ -1,26 +1,19 @@
-package com.creativedesignproject.kumoh_board_backend.CrawlingBoard.service.Impl;
+package com.creativedesignproject.kumoh_board_backend.crawlingboard.service.impl;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ResponseDto;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.CrawlingPostDto;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.CrawlingActivitiesFromLinkCareerResponseDto;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.CrawlingActivitiesFromWevityResponseDto;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.CrawlingContestFromLinkCareerResponseDto;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.CrawlingContestFromWevityResponseDto;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.GetCrawlingDetailBoardResponseDto;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.service.CrawlingBoardService;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.CrawlingContests;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.LinkCareerActivities;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.LinkCareerContests;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.repository.CrawlingActivitiesRepository;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.repository.CrawlingContestsRepository;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.repository.LinkCareerActivitiesRepository;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.repository.LinkCareerContestsRepository;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.entity.CrawlingActivities;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.dto.CrawlingPostDto;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.CrawlingActivities;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.CrawlingContests;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.LinkCareerActivities;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.LinkCareerContests;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.repository.CrawlingActivitiesRepository;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.repository.CrawlingContestsRepository;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.repository.LinkCareerActivitiesRepository;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.repository.LinkCareerContestsRepository;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.service.CrawlingBoardService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,67 +27,40 @@ public class CrawlingBoardServiceImpl implements CrawlingBoardService {
 
 
     @Override
-    public ResponseEntity<? super CrawlingContestFromWevityResponseDto> crawlContestsFromWevityList() {
-        List<CrawlingContests> contests;
-        try {
-            contests = crawlingContestsRepository.findAllWevityContests();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-        return CrawlingContestFromWevityResponseDto.success(contests);
+    public List<CrawlingContests> crawlContestsFromWevityList() {
+        List<CrawlingContests> contests = crawlingContestsRepository.findAllWevityContests();
+        return contests;
     }
 
     @Override
-    public ResponseEntity<? super CrawlingActivitiesFromWevityResponseDto> crawlActivitiesFromWevityList() {
-        List<CrawlingActivities> activities;
-        try {
-            activities = crawlingActivitiesRepository.findAllWevityActivities();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-
-        return CrawlingActivitiesFromWevityResponseDto.success(activities);
+    public List<CrawlingActivities> crawlActivitiesFromWevityList() {
+        List<CrawlingActivities> activities = crawlingActivitiesRepository.findAllWevityActivities();
+        return activities;
     }
 
     @Override
-    public ResponseEntity<? super CrawlingContestFromLinkCareerResponseDto> crawlContestsFromLinkCareerList() {
-        List<LinkCareerContests> contests;
-        try {
-            contests = linkCareerContestsRepository.findAllLinkCareerContests();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-
-        return CrawlingContestFromLinkCareerResponseDto.success(contests);
+    public List<LinkCareerContests> crawlContestsFromLinkCareerList() {
+        List<LinkCareerContests> contests = linkCareerContestsRepository.findAllLinkCareerContests();
+        return contests;
     }
 
     @Override
-    public ResponseEntity<? super CrawlingActivitiesFromLinkCareerResponseDto> crawlActivitiesFromLinkCareerList() {
-        List<LinkCareerActivities> activities;
-        try {
-            activities = linkCareerActivitiesRepository.findAllLinkCareerActivities();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-
-        return CrawlingActivitiesFromLinkCareerResponseDto.success(activities);
+    public List<LinkCareerActivities> crawlActivitiesFromLinkCareerList() {
+        List<LinkCareerActivities> activities = linkCareerActivitiesRepository.findAllLinkCareerActivities();
+        return activities;
     }
 
     @Override
-    public ResponseEntity<? super GetCrawlingDetailBoardResponseDto> getCrawlingDetailBoard(Long category_id,
+    public CrawlingPostDto getCrawlingDetailBoard(Long category_id,
             Long post_number, String type) {
         CrawlingActivities activity;
         CrawlingContests contest;
         LinkCareerActivities linkCareerActivity;
         LinkCareerContests linkCareerContest;
         CrawlingPostDto crawlingEntity = new CrawlingPostDto();
-        try {
-            if(type.equals("wevityActivity")) {
-                activity = crawlingActivitiesRepository.findWevityActivityById(post_number);
+
+        if(type.equals("wevityActivity")) {
+            activity = crawlingActivitiesRepository.findWevityActivityById(post_number);
                 crawlingEntity = CrawlingPostDto.builder()
                         .title(activity.getTitle())
                         .date(activity.getDate())
@@ -122,11 +88,6 @@ public class CrawlingBoardServiceImpl implements CrawlingBoardService {
                         .detailData(linkCareerContest.getDetailData())
                         .build();
             }
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-        return GetCrawlingDetailBoardResponseDto.success(crawlingEntity);
+        return crawlingEntity;
     }
-    
 }

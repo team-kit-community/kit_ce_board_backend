@@ -1,8 +1,10 @@
-package com.creativedesignproject.kumoh_board_backend.Auth.repository;
+package com.creativedesignproject.kumoh_board_backend.auth.repository;
 
 import org.springframework.stereotype.Repository;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.entity.User;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.User;
+
+import java.util.List;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +20,20 @@ public class UserRepository {
                 .getSingleResult() > 0;
     }
 
-    public boolean existsByUserNickname(String nickName) {
-        return em.createQuery("select count(u) from User u where u.nickName = :nickName", Long.class)
+    public User findByUserEmail(String email) {
+        List<User> users = em.createQuery("select u from User u where u.email = :email", User.class)
+                .setParameter("email", email)
+                .getResultList();
+        if (users.isEmpty()) {
+            return null;
+        }
+        return users.get(0);
+    }
+
+    public User findByUserNickname(String nickName) {
+        return em.createQuery("select u from User u where u.nickName = :nickName", User.class)
                 .setParameter("nickName", nickName)
-                .getSingleResult() > 0;
+                .getSingleResult();
     }
 
     public boolean existsByUserId(String userId) {
@@ -31,7 +43,9 @@ public class UserRepository {
     }
 
     public User findByUserId(String userId) {
-        return em.find(User.class, userId);
+        return em.createQuery("select u from User u where u.userId = :userId", User.class)
+                .setParameter("userId", userId)
+                .getSingleResult();
     }
 
     public void save(User user) {

@@ -1,18 +1,18 @@
-package com.creativedesignproject.kumoh_board_backend.CrawlingBoard.service;
+package com.creativedesignproject.kumoh_board_backend.crawlingboard.service;
 
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.CrawlingActivitiesFromLinkCareerResponseDto;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.CrawlingActivitiesFromWevityResponseDto;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.CrawlingContestFromLinkCareerResponseDto;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.CrawlingContestFromWevityResponseDto;
-import com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto.response.GetCrawlingDetailBoardResponseDto;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.dto.CrawlingPostDto;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.CrawlingActivities;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.CrawlingContests;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.LinkCareerActivities;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.LinkCareerContests;
 
-import org.springframework.http.ResponseEntity;
+import java.util.List;
 
 public interface CrawlingBoardService {
-    ResponseEntity<? super CrawlingContestFromWevityResponseDto> crawlContestsFromWevityList();
-    ResponseEntity<? super CrawlingActivitiesFromWevityResponseDto> crawlActivitiesFromWevityList();
-    ResponseEntity<? super CrawlingContestFromLinkCareerResponseDto> crawlContestsFromLinkCareerList();
-    ResponseEntity<? super CrawlingActivitiesFromLinkCareerResponseDto> crawlActivitiesFromLinkCareerList();
-    ResponseEntity<? super GetCrawlingDetailBoardResponseDto> getCrawlingDetailBoard(Long category_id, Long post_number, String type);
+    List<CrawlingContests> crawlContestsFromWevityList();
+    List<CrawlingActivities> crawlActivitiesFromWevityList();
+    List<LinkCareerContests> crawlContestsFromLinkCareerList();
+    List<LinkCareerActivities> crawlActivitiesFromLinkCareerList();
+    CrawlingPostDto getCrawlingDetailBoard(Long category_id, Long post_number, String type);
 }
 

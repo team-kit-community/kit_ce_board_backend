@@ -1,185 +1,159 @@
-package com.creativedesignproject.kumoh_board_backend.Auth.service.serviceimpl;
+package com.creativedesignproject.kumoh_board_backend.auth.service.serviceimpl;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.common.CertificationNumber;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.ChangeNicknameRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.ChangePasswordRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.EmailCertificationRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.SignInRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.SignUpRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.UserIdCheckRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.EmailCertificationResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.SignInResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.SignUpResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.UserIdCheckResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.entity.Certification;
-import com.creativedesignproject.kumoh_board_backend.Auth.entity.User;
-import com.creativedesignproject.kumoh_board_backend.Auth.provider.EmailProvider;
-import com.creativedesignproject.kumoh_board_backend.Auth.provider.JwtProvider;
-import com.creativedesignproject.kumoh_board_backend.Auth.repository.CertificationRepository;
-import com.creativedesignproject.kumoh_board_backend.Auth.repository.UserRepository;
-import com.creativedesignproject.kumoh_board_backend.Auth.service.AuthService;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ChangeNicknameResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ChangePasswordResponseDto;
+import com.creativedesignproject.kumoh_board_backend.common.exception.BadRequestException;
+import com.creativedesignproject.kumoh_board_backend.common.exception.ErrorCode;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.Certification;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.User;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.VerificationCode;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.ChangeNicknameRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.ChangePasswordRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.EmailCertificationRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.SignInRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.SignUpRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.UserIdCheckRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.response.SignInResponseDto;
+import com.creativedesignproject.kumoh_board_backend.auth.provider.JwtProvider;
+import com.creativedesignproject.kumoh_board_backend.auth.repository.CertificationRepository;
+import com.creativedesignproject.kumoh_board_backend.auth.repository.UserRepository;
+import com.creativedesignproject.kumoh_board_backend.auth.service.AuthService;
+import com.creativedesignproject.kumoh_board_backend.auth.service.MailClient;
+import com.creativedesignproject.kumoh_board_backend.auth.service.VerificationCodeProvider;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuthServiceImpl implements AuthService{
     private final UserRepository userRepository;
     private final CertificationRepository certificationRepository;
     private final JwtProvider jwtProvider;
-    private final EmailProvider emailProvider;
+    private final MailClient mailClient;
+    private final VerificationCodeProvider verificationCodeProvider;
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    @Transactional
     @Override
-    public ResponseEntity<? super EmailCertificationResponseDto> emailCertification(EmailCertificationRequestDto dto) {
-        try {
-            String email = dto.getEmail();
-
-            boolean isExistEmail = userRepository.existsByUserEmail(email);
-            if (isExistEmail) return EmailCertificationResponseDto.duplicatedEmail();
-
-            String certificationNumber = CertificationNumber.getCertificationNumber();
-
-            boolean isSuccessed = emailProvider.sendCertificationMail(email, certificationNumber);
-            if (!isSuccessed) return EmailCertificationResponseDto.mailSendFail();
-
-            Certification certification = Certification.builder()
-                        .certificationEmail(email)
-                        .certificationNumber(certificationNumber)
-                        .build();
-            
-            certificationRepository.save(certification);
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-
-        return EmailCertificationResponseDto.success();
+    public void emailCertification(EmailCertificationRequestDto dto) {
+        Certification certification = createCode(dto.getEmail());
+        sendMail(certification);
+        certificationRepository.save(certification);
     }
 
-    @Override
-    public ResponseEntity<? super SignUpResponseDto> signUp(SignUpRequestDto dto) {
-        try {
-            String userId = dto.getUserId();
-            String email = dto.getEmail();
-            String certificationNumber = dto.getCertificationNumber();
-            String nickName = dto.getNickName();
-            
-            boolean isExistNickname = userRepository.existsByUserNickname(nickName);
-            if (isExistNickname) return SignUpResponseDto.duplicateNickname();
+    private Certification createCode(String email) {
+        VerificationCode verificationCode = verificationCodeProvider.provide();
+        User user = userRepository.findByUserEmail(email);
+        if (user != null)
+            throw new BadRequestException(ErrorCode.EMAIL_DUPLICATED);
+        
+        Certification certification = Certification.builder()
+                .email(email)
+                .verificationCode(verificationCode)
+                .build();
 
-            String password = dto.getPassword();
-            String encodedPassword = passwordEncoder.encode(password);
-
-            Certification certification = certificationRepository.findByUserEmail(email);
-            if (certification == null)
-                return SignUpResponseDto.certificationFail();
-
-            boolean isMatched = certification.getCertificationEmail().equals(email)
-                    && certification.getCertificationNumber().equals(certificationNumber);
-            if (!isMatched)
-                return SignUpResponseDto.certificationFail();
-
-            User user = User.builder()
-                    .userId(userId)
-                    .password(encodedPassword)
-                    .nickname(dto.getNickName())
-                    .email(email)
-                    .role("ROLE_USER")
-                    .profileImage(dto.getProfileImage())
-                    .build();
-            
-            userRepository.save(user);
-
-            certificationRepository.deleteByCertificationUserEmail(email);
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-        return SignUpResponseDto.success();
+        return certification;
     }
 
-    @Override
-    public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
-        String token = null;
-        try {
-            String userId = dto.getUserId();
-            User user = userRepository.findByUserId(userId);
-            if (user == null) return SignInResponseDto.signInFail();
-
-            String password = dto.getPassword();
-            String encodedPassword = user.getPassword();
-            boolean isMatched = passwordEncoder.matches(password, encodedPassword);
-            if (!isMatched) return SignInResponseDto.signInFail();
-
-            token = jwtProvider.create(userId);
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-        return SignInResponseDto.success(token);
-    }
-
-    @Override
-    public ResponseEntity<? super UserIdCheckResponseDto> checkUserId(UserIdCheckRequestDto dto) {
-        try {
-            boolean isExistUserId = userRepository.existsByUserId(dto.getUserId());
-            if (isExistUserId) return UserIdCheckResponseDto.duplicateId();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-        return UserIdCheckResponseDto.success();
+    private void sendMail(Certification certification) {
+        mailClient.sendMail(mail -> {
+            mail.setTo(certification.getEmail());
+            mail.setSubject("[금오 보드] 이메일 인증 코드");
+            mail.setText("""
+                금오 보드 이메일 인증 코드입니다.
+                Code는 다음과 같습니다.
+                %s
+                """.formatted(certification.getVerificationCode()));
+        });
     }
 
     @Transactional
     @Override
-    public ResponseEntity<? super ChangePasswordResponseDto> changePassword(String userId, ChangePasswordRequestDto dto) {
-        try {
-            User user = userRepository.findByUserId(userId);
-            if (user == null) return ResponseDto.validationFail();
+    public void signUp(SignUpRequestDto dto) {
+        String userId = dto.getUserId();
+        String email = dto.getEmail();
+        String certificationNumber = dto.getCertificationNumber();
+        String nickName = dto.getNickName();
+        String password = dto.getPassword();
+        String encodedPassword = passwordEncoder.encode(password);
+        String profileImage = dto.getProfileImage();
 
-            if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
-                return ResponseDto.validationFail();
-            }
+        if(userRepository.findByUserId(userId) != null)
+            throw new BadRequestException(ErrorCode.USER_ID_DUPLICATED);
 
-            user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
-            userRepository.save(user);
-            return ChangePasswordResponseDto.success();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
+        if (userRepository.findByUserNickname(nickName) != null)
+            throw new BadRequestException(ErrorCode.NICKNAME_DUPLICATED);
+
+        Certification certification = certificationRepository.findByEmail(email);
+
+        if (certification == null) throw new BadRequestException(ErrorCode.CERTIFICATION_FAIL);
+
+        boolean isMatched = certification.getEmail().equals(email)
+                && certification.getVerificationCode().equals(certificationNumber);
+        if (!isMatched) throw new BadRequestException(ErrorCode.CERTIFICATION_MISSMATCHING);
+
+        User user = User.builder()
+            .nickname(nickName)
+            .userId(userId)
+            .password(encodedPassword)
+            .email(email)
+            .role("ROLE_USER")
+            .profileImage(profileImage)
+            .build();
+        
+        userRepository.save(user);
+        certificationRepository.deleteByCertificationUserEmail(email);
     }
 
     @Override
-    public ResponseEntity<? super ChangeNicknameResponseDto> changeNickname(String userId,
-            ChangeNicknameRequestDto dto) {
-        try {
-            boolean isNicknameExist = userRepository.existsByUserNickname(dto.getNewNickname());
-            if (isNicknameExist) return ChangeNicknameResponseDto.duplicateNickname();
+    public SignInResponseDto signIn(SignInRequestDto dto) {
+        String userId = dto.getUserId();
+        User user = userRepository.findByUserId(userId);
+        if (user == null) throw new BadRequestException(ErrorCode.USER_NOT_FOUND);
 
-            User user = userRepository.findByUserId(userId);
-            if (user == null) return ResponseDto.validationFail();
+        String password = dto.getPassword();
+        String encodedPassword = user.getPassword();
+        boolean isMatched = passwordEncoder.matches(password, encodedPassword);
+        if (!isMatched) throw new BadRequestException(ErrorCode.PASSWORD_NOT_MATCHED);
 
-            user.setNickname(dto.getNewNickname());
-            userRepository.save(user);
-            return ChangeNicknameResponseDto.success();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
+        String token = jwtProvider.create(userId);
+        return SignInResponseDto.builder()
+                .token(token)
+                .build();
+    }
+
+    @Override
+    public void checkUserId(UserIdCheckRequestDto dto) {
+        if (userRepository.findByUserId(dto.getUserId()) != null)
+            throw new BadRequestException(ErrorCode.USER_ID_DUPLICATED);
+    }
+
+    @Transactional
+    @Override
+    public void changePassword(String userId, ChangePasswordRequestDto dto) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) throw new BadRequestException(ErrorCode.USER_NOT_FOUND);
+
+        if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
+            throw new BadRequestException(ErrorCode.PASSWORD_NOT_MATCHED);
         }
+
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+    }
+
+    @Transactional
+    @Override
+    public void changeNickname(String userId, ChangeNicknameRequestDto dto) {
+        User userNickname = userRepository.findByUserNickname(dto.getNewNickname());
+        if (userNickname != null) throw new BadRequestException(ErrorCode.NICKNAME_DUPLICATED);
+
+        User user = userRepository.findByUserId(userId);
+        if (user == null) throw new BadRequestException(ErrorCode.USER_NOT_FOUND);
+
+        user.setNickname(dto.getNewNickname());
     }
 }

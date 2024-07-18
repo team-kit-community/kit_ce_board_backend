@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Board.service.Impl;
+package com.creativedesignproject.kumoh_board_backend.board.service.impl;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -11,7 +11,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.creativedesignproject.kumoh_board_backend.Board.service.FileService;
+import com.creativedesignproject.kumoh_board_backend.board.service.FileService;
 
 @Service
 public class FileServiceImpl implements FileService{

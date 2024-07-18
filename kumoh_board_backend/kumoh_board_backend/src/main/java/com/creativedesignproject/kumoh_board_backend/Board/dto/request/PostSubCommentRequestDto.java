@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Board.dto.request;
+package com.creativedesignproject.kumoh_board_backend.board.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

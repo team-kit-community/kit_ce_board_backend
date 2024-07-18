@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${dev-db.mysql.host}:${dev-db.mysql.port}/${dev-db.mysql.name}
+    username: ${dev-db.mysql.username}
+    password: ${dev-db.mysql.password}
+
+  mail:
+    host: ${dev-mail.host}
+    port: ${dev-mail.port}
+    username: ${dev-mail.username}
+    password: ${dev-mail.password}
+    properties:
+        mail:
+            smtp:
+                auth: true
+                starttls:
+                    enable: true
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        highlight_sql: true
+        hbm2ddl.auto: create
+        default_batch_fetch_size: 100
+    show-sql: true
+    open-in-view: false
+
+logging:
+  level:
+    org.hibernate.orm.jdbc.bind: trace

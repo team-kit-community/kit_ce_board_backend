@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Board.service;
+package com.creativedesignproject.kumoh_board_backend.board.service;
 
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;

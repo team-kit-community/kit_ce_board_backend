@@ -1,9 +1,9 @@
-package com.creativedesignproject.kumoh_board_backend.CrawlingBoard.dto;
+package com.creativedesignproject.kumoh_board_backend.crawlingboard.dto;
 
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class CrawlingPostDto {
     private String title;
     private String date;

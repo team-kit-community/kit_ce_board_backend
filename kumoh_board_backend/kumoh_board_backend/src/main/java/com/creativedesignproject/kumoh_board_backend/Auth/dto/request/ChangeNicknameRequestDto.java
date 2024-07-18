@@ -1,14 +1,10 @@
-package com.creativedesignproject.kumoh_board_backend.Auth.dto.request;
+package com.creativedesignproject.kumoh_board_backend.auth.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
-@NoArgsConstructor
 public class ChangeNicknameRequestDto {
-    @NotBlank
+    @NotBlank(message = "닉네임을 입력해주세요.")
     private String newNickname;
 }

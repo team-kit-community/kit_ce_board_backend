@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Common.BaseEntity;
+package com.creativedesignproject.kumoh_board_backend.common.baseentity;
 
 import java.time.LocalDateTime;
 

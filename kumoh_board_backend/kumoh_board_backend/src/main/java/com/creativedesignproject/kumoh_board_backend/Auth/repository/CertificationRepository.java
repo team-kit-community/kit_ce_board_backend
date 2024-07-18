@@ -1,8 +1,8 @@
-package com.creativedesignproject.kumoh_board_backend.Auth.repository;
+package com.creativedesignproject.kumoh_board_backend.auth.repository;
 
 import org.springframework.stereotype.Repository;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.entity.Certification;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.Certification;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +16,12 @@ public class CertificationRepository {
         em.persist(certification);
     }
 
-    public Certification findByUserEmail(String email) {
+    public Certification findByEmail(String email) {
         return em.find(Certification.class, email);
     }
 
     public void deleteByCertificationUserEmail(String email) {
-        em.createQuery("delete from Certification c where c.certificationEmail = :email")
+        em.createQuery("delete from Certification c where c.user.email = :email")
                 .setParameter("email", email)
                 .executeUpdate();
     }

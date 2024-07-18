@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.Auth.provider;
+package com.creativedesignproject.kumoh_board_backend.auth.provider;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;

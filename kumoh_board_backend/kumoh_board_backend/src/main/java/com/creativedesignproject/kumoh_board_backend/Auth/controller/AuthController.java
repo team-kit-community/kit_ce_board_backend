@@ -1,5 +1,6 @@
-package com.creativedesignproject.kumoh_board_backend.Auth.controller;
+package com.creativedesignproject.kumoh_board_backend.auth.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,19 +10,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.creativedesignproject.kumoh_board_backend.Auth.service.AuthService;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.ChangeNicknameRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.ChangePasswordRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.EmailCertificationRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.SignInRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.SignUpRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.request.UserIdCheckRequestDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.EmailCertificationResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.SignInResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.SignUpResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.UserIdCheckResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ChangePasswordResponseDto;
-import com.creativedesignproject.kumoh_board_backend.Auth.dto.response.ChangeNicknameResponseDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.ChangeNicknameRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.ChangePasswordRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.EmailCertificationRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.SignInRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.SignUpRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.request.UserIdCheckRequestDto;
+import com.creativedesignproject.kumoh_board_backend.auth.dto.response.SignInResponseDto;
+import com.creativedesignproject.kumoh_board_backend.auth.service.AuthService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,38 +30,42 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/emailCertification")
-    public ResponseEntity<? super EmailCertificationResponseDto> emailCertification(
-            @RequestBody @Valid EmailCertificationRequestDto requestBody) {
-        return authService.emailCertification(requestBody);
+    public ResponseEntity<Void> emailCertification(@RequestBody @Valid EmailCertificationRequestDto requestBody) {
+        authService.emailCertification(requestBody);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/checkUserId")
-    public ResponseEntity<? super UserIdCheckResponseDto> checkUserId(
+    public ResponseEntity<Void> checkUserId(
             @RequestBody @Valid UserIdCheckRequestDto requestBody) {
-        return authService.checkUserId(requestBody);
+        authService.checkUserId(requestBody);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/signUp")
-    public ResponseEntity<? super SignUpResponseDto> signUp(@RequestBody @Valid SignUpRequestDto requestBody) {
-        return authService.signUp(requestBody);
+    public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpRequestDto requestBody) {
+        authService.signUp(requestBody);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/signIn")
-    public ResponseEntity<? super SignInResponseDto> signIn(@RequestBody @Valid SignInRequestDto requestBody) {
-        return authService.signIn(requestBody);
+    public ResponseEntity<SignInResponseDto> signIn(@RequestBody @Valid SignInRequestDto requestBody) {
+        return ResponseEntity.status(HttpStatus.OK).body(authService.signIn(requestBody));
     }
 
     @PatchMapping("/changePassword")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<? super ChangePasswordResponseDto> changePassword(@AuthenticationPrincipal String userId,
+    public ResponseEntity<Void> changePassword(@AuthenticationPrincipal String userId,
                                                               @RequestBody @Valid ChangePasswordRequestDto dto) {
-        return authService.changePassword(userId, dto);
+        authService.changePassword(userId, dto);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/changeNickname")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<? super ChangeNicknameResponseDto> changeNickname(@AuthenticationPrincipal String userId,
+    public ResponseEntity<Void> changeNickname(@AuthenticationPrincipal String userId,
                                                               @RequestBody @Valid ChangeNicknameRequestDto dto) {
-        return authService.changeNickname(userId, dto);
+        authService.changeNickname(userId, dto);
+        return ResponseEntity.ok().build();
     }
 }
