@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.crawlingboard.entity;
+package com.creativedesignproject.kumoh_board_backend.crawlingboard.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CrawlingActivities extends BaseCrawling {
-    @Column(name = "field")
+    @Column(name = "field"
+    )
     private String field;
     @Column(name = "image")
     private String image;

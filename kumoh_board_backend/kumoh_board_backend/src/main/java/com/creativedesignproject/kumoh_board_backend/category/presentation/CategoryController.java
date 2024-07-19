@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.category.controller;
+package com.creativedesignproject.kumoh_board_backend.category.presentation;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

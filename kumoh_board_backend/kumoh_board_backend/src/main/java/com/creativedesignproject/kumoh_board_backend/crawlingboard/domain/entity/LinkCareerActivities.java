@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.crawlingboard.entity;
+package com.creativedesignproject.kumoh_board_backend.crawlingboard.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class LinkCareerContests extends BaseCrawling {
+public class LinkCareerActivities extends BaseCrawling {
     @Column(name = "image")
     private String image;
     @Column(name = "host")
@@ -21,7 +21,7 @@ public class LinkCareerContests extends BaseCrawling {
     private int comments;
 
     @Builder
-    public LinkCareerContests(String title, String date, String url, String detailData, String image, String host, int views, int comments) {
+    public LinkCareerActivities(String title, String date, String url, String detailData, String image, String host, int views, int comments) {
         super(title, date, url, detailData);
         this.image = image;
         this.host = host;

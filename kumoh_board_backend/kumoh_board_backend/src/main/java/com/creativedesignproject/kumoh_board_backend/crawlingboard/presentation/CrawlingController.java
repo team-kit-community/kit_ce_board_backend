@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.crawlingboard.controller;
+package com.creativedesignproject.kumoh_board_backend.crawlingboard.presentation;
 
 import java.io.IOException;
 
@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.domain.entity.CrawlingActivities;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.domain.entity.CrawlingContests;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.domain.entity.LinkCareerActivities;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.domain.entity.LinkCareerContests;
 import com.creativedesignproject.kumoh_board_backend.crawlingboard.dto.CrawlingPostDto;
-import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.CrawlingActivities;
-import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.CrawlingContests;
-import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.LinkCareerActivities;
-import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.LinkCareerContests;
 import com.creativedesignproject.kumoh_board_backend.crawlingboard.service.CrawlingBoardService;
 import com.creativedesignproject.kumoh_board_backend.crawlingboard.service.CrawlingService;
 

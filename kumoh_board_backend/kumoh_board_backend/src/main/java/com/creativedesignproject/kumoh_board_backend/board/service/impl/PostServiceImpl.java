@@ -25,8 +25,8 @@ import com.creativedesignproject.kumoh_board_backend.board.dto.request.PostComme
 import com.creativedesignproject.kumoh_board_backend.board.dto.request.PostSubCommentRequestDto;
 import com.creativedesignproject.kumoh_board_backend.board.dto.response.PutFavoriteResponseDto;
 import com.creativedesignproject.kumoh_board_backend.board.service.PostService;
-import com.creativedesignproject.kumoh_board_backend.category.domain.Category;
-import com.creativedesignproject.kumoh_board_backend.category.repository.CategoryRepository;
+import com.creativedesignproject.kumoh_board_backend.category.domain.entity.Category;
+import com.creativedesignproject.kumoh_board_backend.category.domain.repository.CategoryRepository;
 import com.creativedesignproject.kumoh_board_backend.common.exception.BadRequestException;
 import com.creativedesignproject.kumoh_board_backend.common.exception.ErrorCode;
 import com.creativedesignproject.kumoh_board_backend.auth.domain.entity.User;
@@ -79,8 +79,7 @@ public class PostServiceImpl implements PostService{
         User user = userRepository.findByUserId(userId);
         if(user == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_USER);
 
-        Category category = categoryRepository.findById(category_id);
-        if(category == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_CATEGORY);
+        Category category = categoryRepository.findById(category_id).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTED_CATEGORY));
 
         Post post = Post.builder()
                 .title(dto.getTitle())
@@ -113,8 +112,7 @@ public class PostServiceImpl implements PostService{
         User user = userRepository.findByUserId(userId);
         if(user == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_USER);
 
-        Category category = categoryRepository.findById(category_id);
-        if(category == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_CATEGORY);
+        categoryRepository.findById(category_id).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTED_CATEGORY));
 
         Post post = postRepository.findByCategoryIdAndPostNumber(category_id, post_number).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTED_POST));
 

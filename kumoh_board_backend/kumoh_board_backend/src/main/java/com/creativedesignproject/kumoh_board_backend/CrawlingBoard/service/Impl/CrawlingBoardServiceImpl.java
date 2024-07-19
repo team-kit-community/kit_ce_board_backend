@@ -4,15 +4,15 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.domain.entity.CrawlingActivities;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.domain.entity.CrawlingContests;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.domain.entity.LinkCareerActivities;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.domain.entity.LinkCareerContests;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.domain.repository.CrawlingActivitiesRepository;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.domain.repository.CrawlingContestsRepository;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.domain.repository.LinkCareerActivitiesRepository;
+import com.creativedesignproject.kumoh_board_backend.crawlingboard.domain.repository.LinkCareerContestsRepository;
 import com.creativedesignproject.kumoh_board_backend.crawlingboard.dto.CrawlingPostDto;
-import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.CrawlingActivities;
-import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.CrawlingContests;
-import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.LinkCareerActivities;
-import com.creativedesignproject.kumoh_board_backend.crawlingboard.entity.LinkCareerContests;
-import com.creativedesignproject.kumoh_board_backend.crawlingboard.repository.CrawlingActivitiesRepository;
-import com.creativedesignproject.kumoh_board_backend.crawlingboard.repository.CrawlingContestsRepository;
-import com.creativedesignproject.kumoh_board_backend.crawlingboard.repository.LinkCareerActivitiesRepository;
-import com.creativedesignproject.kumoh_board_backend.crawlingboard.repository.LinkCareerContestsRepository;
 import com.creativedesignproject.kumoh_board_backend.crawlingboard.service.CrawlingBoardService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,25 +28,25 @@ public class CrawlingBoardServiceImpl implements CrawlingBoardService {
 
     @Override
     public List<CrawlingContests> crawlContestsFromWevityList() {
-        List<CrawlingContests> contests = crawlingContestsRepository.findAllWevityContests();
+        List<CrawlingContests> contests = crawlingContestsRepository.findAll();
         return contests;
     }
 
     @Override
     public List<CrawlingActivities> crawlActivitiesFromWevityList() {
-        List<CrawlingActivities> activities = crawlingActivitiesRepository.findAllWevityActivities();
+        List<CrawlingActivities> activities = crawlingActivitiesRepository.findAll();
         return activities;
     }
 
     @Override
     public List<LinkCareerContests> crawlContestsFromLinkCareerList() {
-        List<LinkCareerContests> contests = linkCareerContestsRepository.findAllLinkCareerContests();
+        List<LinkCareerContests> contests = linkCareerContestsRepository.findAll();
         return contests;
     }
 
     @Override
     public List<LinkCareerActivities> crawlActivitiesFromLinkCareerList() {
-        List<LinkCareerActivities> activities = linkCareerActivitiesRepository.findAllLinkCareerActivities();
+        List<LinkCareerActivities> activities = linkCareerActivitiesRepository.findAll();
         return activities;
     }
 
