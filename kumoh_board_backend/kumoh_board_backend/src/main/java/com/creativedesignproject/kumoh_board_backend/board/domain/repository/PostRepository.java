@@ -15,15 +15,15 @@ import java.time.LocalDateTime;
 public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findById(Long post_number);
 
-    Optional<Post> findByCategoryIdAndPostNumber(Long category_id, Long post_number);
+    Optional<Post> findByCategoryIdAndId(Long category_id, Long id);
 
-    boolean existsByCategoryIdAndPostNumber(Long category_id, Long post_number);
+    @Query("SELECT p FROM Post p LEFT JOIN FETCH p.images WHERE p.category.id = :categoryId AND p.id = :postId")
+    Optional<Post> selectBoardWithImage(@Param("categoryId") Long categoryId, @Param("postId") Long postId);
 
-    Optional<Post> selectBoardWithImage(Long category_id, Long post_number);
+    @Query("SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END FROM Post p WHERE p.category.id = :categoryId AND p.id = :postId AND p.user.id = :userId")
+    boolean isOwner(@Param("categoryId") Long categoryId, @Param("postId") Long postId, @Param("userId") String userId); // 커스텀 쿼리 추가
 
-    boolean isOwner(Long category_id, Long post_number, String userId);
-
-    void deleteByPostNumberAndCategoryId(Long post_number, Long category_id);
+    void deleteByCategoryIdAndId(Long category_id, Long id);
 
     @Query("select new com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.PostDto(p.title, p.contents, p.favorite_count, p.comment_count, p.view_count, p.user.nickname, p.category.name, p.updatedDate) from Post p where p.category.id = :category_id and p.updatedDate >= :sevenDaysAgoDate order by p.updatedDate desc")
     List<PostDto> selectLatestBoardList(@Param("category_id") Long category_id, @Param("sevenDaysAgoDate") LocalDateTime sevenDaysAgoDate);
@@ -31,11 +31,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("select new com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.PostDto(p.title, p.contents, p.favorite_count, p.comment_count, p.view_count, p.user.nickname, p.category.name, p.updatedDate) from Post p where p.category.id = :category_id and p.updatedDate >= :sevenDaysAgoDate order by p.favorite_count desc")
     List<PostDto> selectTop3BoardList(@Param("sevenDaysAgoDate") LocalDateTime sevenDaysAgoDate, @Param("category_id") Long category_id);
 
-    @Query("select new com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.PostDto(p.title, p.contents, p.favorite_count, p.comment_count, p.view_count, p.user.nickname, p.category.name, p.updatedDate) from Post p where p.title like :search_word or p.contents like :search_word or p.user.nickname like :search_word order by p.updatedDate desc")
-    List<PostDto> selectSearchBoardList(@Param("search_word") String search_word, @Param("relation_word") String relation_word);
+    @Query("SELECT new com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.PostDto(p.title, p.contents, p.favorite_count, p.comment_count, p.view_count, p.user.nickname, p.category.name, p.updatedDate) FROM Post p WHERE (p.title LIKE :searchWord OR p.contents LIKE :searchWord OR p.user.nickname LIKE :searchWord) AND (p.title LIKE :relationWord OR p.contents LIKE :relationWord OR p.user.nickname LIKE :relationWord) ORDER BY p.updatedDate DESC")
+    List<PostDto> selectSearchBoardList(@Param("searchWord") String searchWord, @Param("relationWord") String relationWord);
 
-    @Query("select new com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.PostDto(p.title, p.contents, p.favorite_count, p.comment_count, p.view_count, p.user.nickname, p.category.name, p.updatedDate) from Post p where p.user.user_id = :userId order by p.updatedDate desc")
+    @Query("select new com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.PostDto(p.title, p.contents, p.favorite_count, p.comment_count, p.view_count, p.user.nickname, p.category.name, p.updatedDate) from Post p where p.user.userId = :userId order by p.updatedDate desc")
     List<PostDto> selectUserBoardList(@Param("userId") String userId);
 
-    boolean existsByPostNumberAndCategoryId(Long post_number, Long category_id);
+    boolean existsByCategoryIdAndId(Long category_id, Long id);
 }

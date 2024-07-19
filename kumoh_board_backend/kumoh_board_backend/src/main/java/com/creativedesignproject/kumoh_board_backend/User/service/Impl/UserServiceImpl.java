@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
         if(user == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_USER);
 
         return GetSignInUserResponseDto.builder()
-                .userId(user.getUser_id())
+                .userId(user.getUserId())
                 .nickName(user.getNickname())
                 .profileImage(user.getProfile_image())
                 .build();

@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CertificationRepository extends JpaRepository<Certification, Long> {
     Certification findByEmail(String email);
-    void deleteByCertificationUserEmail(String email);
+    void deleteByEmail(String email);
 }

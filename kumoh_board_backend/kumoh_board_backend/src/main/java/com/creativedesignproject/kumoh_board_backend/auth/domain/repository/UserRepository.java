@@ -7,9 +7,9 @@ import com.creativedesignproject.kumoh_board_backend.auth.domain.entity.User;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    boolean existsByUserEmail(String email);
-    Optional<User> findByUserEmail(String email);
-    User findByUserNickname(String nickName);
+    boolean existsByEmail(String email);
+    Optional<User> findByEmail(String email);
+    User findByNickname(String nickName);
     boolean existsByUserId(String userId);
     User findByUserId(String userId);
 }

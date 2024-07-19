@@ -53,11 +53,11 @@ public class PostServiceImpl implements PostService{
 
     @Transactional
     @Override
-    public PostDto getPost(Long category_id, Long post_number) {
-        boolean isExistedCategory = categoryRepository.existsByCategoryId(category_id);
+    public PostDto getPost(Long categoryId, Long postId) {
+        boolean isExistedCategory = categoryRepository.existsById(categoryId);
         if(!isExistedCategory) throw new BadRequestException(ErrorCode.NOT_EXISTED_CATEGORY);
         
-        Post post = postRepository.selectBoardWithImage(category_id, post_number).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTED_POST));
+        Post post = postRepository.selectBoardWithImage(categoryId, postId).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTED_POST));
         post.increaseViewCount(); // 따로 저장안해도 저장 됨 -> 영속성 컨텍스트 때문
         
         PostDto postDto = PostDto.builder()
@@ -93,17 +93,17 @@ public class PostServiceImpl implements PostService{
 
     @Transactional
     @Override
-    public void deletePost(Long category_id, Long post_number,String userId) {
+    public void deletePost(Long categoryId, Long postId,String userId) {
         boolean isExistedUser = userRepository.existsByUserId(userId);
         if(!isExistedUser) throw new BadRequestException(ErrorCode.NOT_EXISTED_USER);
 
-        boolean isExistedPost = postRepository.existsByCategoryIdAndPostNumber(category_id, post_number);
+        boolean isExistedPost = postRepository.existsByCategoryIdAndId(categoryId, postId);
         if(!isExistedPost) throw new BadRequestException(ErrorCode.NOT_EXISTED_POST);
 
-        boolean isOwner = postRepository.isOwner(category_id, post_number, userId);
+        boolean isOwner = postRepository.isOwner(categoryId, postId, userId);
         if(!isOwner) throw new BadRequestException(ErrorCode.NO_PERMISSION);
 
-        postRepository.deleteByPostNumberAndCategoryId(post_number, category_id);
+        postRepository.deleteByCategoryIdAndId(categoryId, postId);
     }
 
     @Transactional
@@ -114,7 +114,7 @@ public class PostServiceImpl implements PostService{
 
         categoryRepository.findById(category_id).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTED_CATEGORY));
 
-        Post post = postRepository.findByCategoryIdAndPostNumber(category_id, post_number).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTED_POST));
+        Post post = postRepository.findByCategoryIdAndId(category_id, post_number).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTED_POST));
 
         boolean isOwner = postRepository.isOwner(category_id, post_number, userId);
         if (!isOwner) throw new BadRequestException(ErrorCode.NO_PERMISSION);
@@ -140,8 +140,8 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public List<PostDto> getSearchBoardList(String search_word, String relation_word) {
-        List<PostDto> postList = postRepository.selectSearchBoardList(search_word, relation_word);
+    public List<PostDto> getSearchBoardList(String searchWord, String relationWord) {
+        List<PostDto> postList = postRepository.selectSearchBoardList(searchWord, relationWord);
         return postList;
     }
 
@@ -156,8 +156,8 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public List<CategoryPostDto> getCategoryOfBoardList() {
-        List<CategoryPostDto> postList = categoryRepository.findAllCategoryPostDtos();
-        return postList;
+        // List<CategoryPostDto> postList = categoryRepository.findAllCategoryPostDtos();
+        return null;
     }
 
     @Transactional
@@ -168,7 +168,7 @@ public class PostServiceImpl implements PostService{
 
         Post post = postRepository.findById(post_number).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTED_POST));
 
-        Optional<Favorite> favorite = favoriteRepository.findByBoardNumberAndUserId(user.getId(), post_number);
+        Optional<Favorite> favorite = favoriteRepository.findByPostIdAndUserId(user.getId(), post_number);
 
         if (!favorite.isPresent()) {
             Favorite favoriteEntity = Favorite.builder()
@@ -239,7 +239,7 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public List<FavoriteListDto> getFavoriteList(Long category_id, Long post_number) {
-        boolean existedBoard = postRepository.existsByPostNumberAndCategoryId(post_number, category_id);
+        boolean existedBoard = postRepository.existsByCategoryIdAndId(category_id, post_number);
         if(!existedBoard) throw new BadRequestException(ErrorCode.NOT_EXISTED_POST);
 
         List<FavoriteListDto> favoriteList = favoriteRepository.findByPostId(post_number);

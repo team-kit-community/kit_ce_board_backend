@@ -60,28 +60,28 @@ public class CrawlingBoardServiceImpl implements CrawlingBoardService {
         CrawlingPostDto crawlingEntity = new CrawlingPostDto();
 
         if(type.equals("wevityActivity")) {
-            activity = crawlingActivitiesRepository.findWevityActivityById(post_number);
+            activity = crawlingActivitiesRepository.findById(post_number).get();
                 crawlingEntity = CrawlingPostDto.builder()
                         .title(activity.getTitle())
                         .date(activity.getDate())
                         .detailData(activity.getDetailData())
                         .build();
             } else if(type.equals("wevityContest")) {
-                contest = crawlingContestsRepository.findWevityContestById(post_number);
+                contest = crawlingContestsRepository.findById(post_number).get();
                 crawlingEntity = CrawlingPostDto.builder()
                         .title(contest.getTitle())
                         .date(contest.getDate())
                         .detailData(contest.getDetailData())
                         .build();
             } else if(type.equals("linkCareerActivity")) {
-                linkCareerActivity = linkCareerActivitiesRepository.findLinkCareerActivityById(post_number);
+                linkCareerActivity = linkCareerActivitiesRepository.findById(post_number).get();
                 crawlingEntity = CrawlingPostDto.builder()
                         .title(linkCareerActivity.getTitle())
                         .date(linkCareerActivity.getDate())
                         .detailData(linkCareerActivity.getDetailData())
                         .build();
             } else if(type.equals("linkCareerContest")) {
-                linkCareerContest = linkCareerContestsRepository.findLinkCareerContestById(post_number);
+                linkCareerContest = linkCareerContestsRepository.findById(post_number).get();
                 crawlingEntity = CrawlingPostDto.builder()
                         .title(linkCareerContest.getTitle())
                         .date(linkCareerContest.getDate())

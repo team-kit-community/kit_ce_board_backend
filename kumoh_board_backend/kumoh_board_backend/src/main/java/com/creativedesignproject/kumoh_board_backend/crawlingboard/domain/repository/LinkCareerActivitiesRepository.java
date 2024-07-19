@@ -1,22 +1,28 @@
 package com.creativedesignproject.kumoh_board_backend.crawlingboard.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.creativedesignproject.kumoh_board_backend.crawlingboard.domain.entity.LinkCareerActivities;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface LinkCareerActivitiesRepository extends JpaRepository<LinkCareerActivities, Long> {
 
     List<LinkCareerActivities> findAll();
 
-    LinkCareerActivities findLinkCareerActivityById(Long post_number);
+    Optional<LinkCareerActivities> findById(Long id);
 
-    void deleteByRemainingDaysLessThanEqualActivity(int remainingDaysThreshold);
+    @Modifying
+    @Query("DELETE FROM LinkCareerActivities lca WHERE lca.date <= :remainingDaysThreshold")
+    void deleteByRemainingDaysLessThanEqualActivity(@Param("remainingDaysThreshold") int remainingDaysThreshold);
 
-    boolean existsByUrlActivity(String url);
+    boolean existsByUrl(String url);
 
-    void saveAll(List<LinkCareerActivities> entitiesToUpdate);
+    //void saveAll(List<LinkCareerActivities> entitiesToUpdate);
 
-    LinkCareerActivities findByUrlLinkCareerActivity(String detailUrl);
+    LinkCareerActivities findByUrl(String detailUrl);
 }

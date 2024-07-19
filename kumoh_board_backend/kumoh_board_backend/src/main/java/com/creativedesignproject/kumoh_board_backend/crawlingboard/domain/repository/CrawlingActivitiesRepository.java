@@ -1,17 +1,23 @@
 package com.creativedesignproject.kumoh_board_backend.crawlingboard.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.creativedesignproject.kumoh_board_backend.crawlingboard.domain.entity.CrawlingActivities;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CrawlingActivitiesRepository extends JpaRepository<CrawlingActivities, Long> {
     List<CrawlingActivities> findAll();
 
-    CrawlingActivities findWevityActivityById(Long post_number);
+    Optional<CrawlingActivities> findById(Long id);
 
-    void deleteByRemainingDaysLessThanEqualActivity(int remainingDaysThreshold);
+    @Modifying
+    @Query("DELETE FROM CrawlingActivities ca WHERE ca.date <= :remainingDaysThreshold")
+    void deleteByRemainingDaysLessThanEqualActivity(@Param("remainingDaysThreshold") int remainingDaysThreshold);
 
-    boolean existsByUrlActivity(String url);
+    boolean existsByUrl(String url);
 }

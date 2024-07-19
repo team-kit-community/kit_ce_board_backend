@@ -47,7 +47,7 @@ public class AuthServiceImpl implements AuthService{
 
     private Certification createCode(String email) {
         VerificationCode verificationCode = verificationCodeProvider.provide();
-        userRepository.findByUserEmail(email).ifPresent(user -> { throw new BadRequestException(ErrorCode.EMAIL_DUPLICATED); });
+        userRepository.findByEmail(email).ifPresent(user -> { throw new BadRequestException(ErrorCode.EMAIL_DUPLICATED); });
 
         Certification certification = Certification.builder()
                 .email(email)
@@ -83,7 +83,7 @@ public class AuthServiceImpl implements AuthService{
         if(userRepository.findByUserId(userId) != null)
             throw new BadRequestException(ErrorCode.USER_ID_DUPLICATED);
 
-        if (userRepository.findByUserNickname(nickName) != null)
+        if (userRepository.findByNickname(nickName) != null)
             throw new BadRequestException(ErrorCode.NICKNAME_DUPLICATED);
 
         Certification certification = certificationRepository.findByEmail(email);
@@ -104,7 +104,7 @@ public class AuthServiceImpl implements AuthService{
             .build();
         
         userRepository.save(user);
-        certificationRepository.deleteByCertificationUserEmail(email);
+        certificationRepository.deleteByEmail(email);
     }
 
     @Override
@@ -146,8 +146,8 @@ public class AuthServiceImpl implements AuthService{
     @Transactional
     @Override
     public void changeNickname(String userId, ChangeNicknameRequestDto dto) {
-        User userNickname = userRepository.findByUserNickname(dto.getNewNickname());
-        if (userNickname != null) throw new BadRequestException(ErrorCode.NICKNAME_DUPLICATED);
+        User nickname = userRepository.findByNickname(dto.getNewNickname());
+        if (nickname != null) throw new BadRequestException(ErrorCode.NICKNAME_DUPLICATED);
 
         User user = userRepository.findByUserId(userId);
         if (user == null) throw new BadRequestException(ErrorCode.USER_NOT_FOUND);

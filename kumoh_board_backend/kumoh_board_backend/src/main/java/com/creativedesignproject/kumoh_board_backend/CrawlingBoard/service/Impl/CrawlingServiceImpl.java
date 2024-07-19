@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -87,7 +88,7 @@ public class CrawlingServiceImpl implements CrawlingService {
                     String url = contest.select(".tit a").attr("abs:href"); // 상세 링크
 
                     // LocalDate parsedDate = parseDate(date);
-                    if (crawlingContestsRepository.existsByUrlContest(url)) {
+                    if (crawlingContestsRepository.existsByUrl(url)) {
                         log.info("중복된 데이 뛰어넘음");
                         continue;
                     } 
@@ -156,7 +157,7 @@ public class CrawlingServiceImpl implements CrawlingService {
                 // LocalDate parsedDate = parseDate(date);
                 String url = contest.select("li a").attr("abs:href"); // 상세 링크
 
-                if (crawlingActivitiesRepository.existsByUrlActivity(url)) {
+                if (crawlingActivitiesRepository.existsByUrl(url)) {
                     log.info("중복된 데이터 뛰어넘음");
                     continue;
                 }
@@ -189,7 +190,9 @@ public class CrawlingServiceImpl implements CrawlingService {
 
         int pageNum = 1;
         List<String> detailUrls = new ArrayList<>();
-        Set<String> existingUrls = new HashSet<>(linkCareerContestsRepository.findAllLinkCareerContestUrls());
+        Set<String> existingUrls = new HashSet<>(linkCareerContestsRepository.findAll().stream()
+                .map(LinkCareerContests::getUrl)
+                .collect(Collectors.toSet()));
 
         while(true) {
             final String contestUrl = "/list/contest?filterBy_categoryIDs=35&filterBy_categoryIDs=33&filterType=CATEGORY&orderBy_direction=DESC&orderBy_field=CREATED_AT&page=" + pageNum;
@@ -267,7 +270,7 @@ public class CrawlingServiceImpl implements CrawlingService {
                 log.warn("상세 데이터를 찾을 수 없습니다. 상세 데이터가 없는 것으로 간주합니다.");
             }
 
-            LinkCareerContests existingEntity = linkCareerContestsRepository.findByUrlLinkCareerContest(detailUrl);
+            LinkCareerContests existingEntity = linkCareerContestsRepository.findByUrl(detailUrl);
             log.info("existingEntity: {}", existingEntity);
             existingEntity.setDetailData(detailData);
             entitiesToUpdate.add(existingEntity);
@@ -292,7 +295,9 @@ public class CrawlingServiceImpl implements CrawlingService {
 
         int pageNum = 1;
         List<String> detailUrls = new ArrayList<>();
-        Set<String> existingUrls = new HashSet<>(linkCareerActivitiesRepository.findAllLinkCareerActivitiesUrls());
+        Set<String> existingUrls = new HashSet<>(linkCareerActivitiesRepository.findAll().stream()
+                .map(LinkCareerActivities::getUrl)
+                .collect(Collectors.toSet()));
 
         while(true) {
             final String activitiesUrl = "/list/activity?filterBy_interestIDs=13&filterType=INTEREST&orderBy_direction=DESC&orderBy_field=CREATED_AT&page=" + pageNum;
@@ -370,7 +375,7 @@ public class CrawlingServiceImpl implements CrawlingService {
                 log.warn("상세 데이터를 찾을 수 없습니다. 상세 데이터가 없는 것으로 간주합니다.");
             }
 
-            LinkCareerActivities existingEntity = linkCareerActivitiesRepository.findByUrlLinkCareerActivity(detailUrl);
+            LinkCareerActivities existingEntity = linkCareerActivitiesRepository.findByUrl(detailUrl);
             log.info("existingEntity: {}", existingEntity);
             existingEntity.setDetailData(detailData);
             entitiesToUpdate.add(existingEntity);
