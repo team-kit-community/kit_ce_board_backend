@@ -25,7 +25,6 @@ public class CrawlingBoardServiceImpl implements CrawlingBoardService {
     private final LinkCareerContestsRepository linkCareerContestsRepository;
     private final LinkCareerActivitiesRepository linkCareerActivitiesRepository;
 
-
     @Override
     public List<CrawlingContests> crawlContestsFromWevityList() {
         List<CrawlingContests> contests = crawlingContestsRepository.findAll();

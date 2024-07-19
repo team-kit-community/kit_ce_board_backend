@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.creativedesignproject.kumoh_board_backend.auth.domain.entity.User;
-import com.creativedesignproject.kumoh_board_backend.auth.domain.repository.UserRepository;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.repository.user.UserRepository;
 import com.creativedesignproject.kumoh_board_backend.auth.provider.JwtProvider;
 
 import org.springframework.util.StringUtils;

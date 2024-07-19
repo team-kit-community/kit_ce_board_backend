@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.creativedesignproject.kumoh_board_backend.auth.domain.entity.User;
-import com.creativedesignproject.kumoh_board_backend.auth.domain.repository.UserRepository;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.repository.user.UserRepository;
 import com.creativedesignproject.kumoh_board_backend.common.exception.BadRequestException;
 import com.creativedesignproject.kumoh_board_backend.common.exception.ErrorCode;
 import com.creativedesignproject.kumoh_board_backend.user.dto.response.GetSignInUserResponseDto;
