@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.creativedesignproject.kumoh_board_backend.category.domain.Category;
 import com.creativedesignproject.kumoh_board_backend.category.dto.request.UpdateCategoryRequestDto;
+import com.creativedesignproject.kumoh_board_backend.category.domain.entity.Category;
 import com.creativedesignproject.kumoh_board_backend.category.dto.request.CategoryDto;
 import com.creativedesignproject.kumoh_board_backend.category.service.CategoryService;
 

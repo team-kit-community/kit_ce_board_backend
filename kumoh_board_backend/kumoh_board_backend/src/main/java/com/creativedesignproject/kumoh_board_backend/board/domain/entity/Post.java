@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.creativedesignproject.kumoh_board_backend.auth.domain.entity.User;
-import com.creativedesignproject.kumoh_board_backend.category.domain.Category;
+import com.creativedesignproject.kumoh_board_backend.category.domain.entity.Category;
 import com.creativedesignproject.kumoh_board_backend.common.baseentity.BaseEntity;
 
 import jakarta.persistence.CascadeType;
