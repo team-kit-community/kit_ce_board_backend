@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.board.repository.query;
+package com.creativedesignproject.kumoh_board_backend.board.domain.repository.query;
 
 import lombok.Builder;
 import lombok.Data;

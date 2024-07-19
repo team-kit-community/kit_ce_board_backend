@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.board.domain;
+package com.creativedesignproject.kumoh_board_backend.board.domain.entity;
 
 import lombok.AccessLevel;
 import lombok.Builder;

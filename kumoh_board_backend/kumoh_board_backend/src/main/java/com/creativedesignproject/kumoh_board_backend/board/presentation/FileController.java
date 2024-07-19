@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.board.controller;
+package com.creativedesignproject.kumoh_board_backend.board.presentation;
 
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;

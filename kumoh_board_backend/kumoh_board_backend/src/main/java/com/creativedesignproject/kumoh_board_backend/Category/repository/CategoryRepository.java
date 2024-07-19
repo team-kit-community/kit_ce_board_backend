@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.creativedesignproject.kumoh_board_backend.board.repository.query.CategoryPostDto;
-import com.creativedesignproject.kumoh_board_backend.board.repository.query.PostDto;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.CategoryPostDto;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.PostDto;
 import com.creativedesignproject.kumoh_board_backend.category.domain.Category;
 
 import jakarta.persistence.EntityManager;

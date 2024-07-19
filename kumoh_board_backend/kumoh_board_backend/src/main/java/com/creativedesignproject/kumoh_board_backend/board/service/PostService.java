@@ -2,15 +2,15 @@ package com.creativedesignproject.kumoh_board_backend.board.service;
 
 import java.util.List;
 
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.CategoryPostDto;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.CommentDto;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.FavoriteListDto;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.PostDto;
 import com.creativedesignproject.kumoh_board_backend.board.dto.request.PatchBoardRequestDto;
 import com.creativedesignproject.kumoh_board_backend.board.dto.request.PostBoardRequestDto;
 import com.creativedesignproject.kumoh_board_backend.board.dto.request.PostCommentRequestDto;
 import com.creativedesignproject.kumoh_board_backend.board.dto.request.PostSubCommentRequestDto;
 import com.creativedesignproject.kumoh_board_backend.board.dto.response.PutFavoriteResponseDto;
-import com.creativedesignproject.kumoh_board_backend.board.repository.query.CategoryPostDto;
-import com.creativedesignproject.kumoh_board_backend.board.repository.query.CommentDto;
-import com.creativedesignproject.kumoh_board_backend.board.repository.query.FavoriteListDto;
-import com.creativedesignproject.kumoh_board_backend.board.repository.query.PostDto;
 
 
 public interface PostService {

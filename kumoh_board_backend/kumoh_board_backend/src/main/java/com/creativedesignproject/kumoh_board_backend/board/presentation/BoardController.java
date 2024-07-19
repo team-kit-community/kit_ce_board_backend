@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.board.controller;
+package com.creativedesignproject.kumoh_board_backend.board.presentation;
 
 import java.util.List;
 
@@ -16,15 +16,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.CategoryPostDto;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.CommentDto;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.FavoriteListDto;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.PostDto;
 import com.creativedesignproject.kumoh_board_backend.board.dto.request.PatchBoardRequestDto;
 import com.creativedesignproject.kumoh_board_backend.board.dto.request.PostBoardRequestDto;
 import com.creativedesignproject.kumoh_board_backend.board.dto.request.PostCommentRequestDto;
 import com.creativedesignproject.kumoh_board_backend.board.dto.request.PostSubCommentRequestDto;
 import com.creativedesignproject.kumoh_board_backend.board.dto.response.PutFavoriteResponseDto;
-import com.creativedesignproject.kumoh_board_backend.board.repository.query.CategoryPostDto;
-import com.creativedesignproject.kumoh_board_backend.board.repository.query.CommentDto;
-import com.creativedesignproject.kumoh_board_backend.board.repository.query.FavoriteListDto;
-import com.creativedesignproject.kumoh_board_backend.board.repository.query.PostDto;
 import com.creativedesignproject.kumoh_board_backend.board.service.PostService;
 
 import jakarta.validation.Valid;

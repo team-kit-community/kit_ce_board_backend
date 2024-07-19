@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.board.domain;
+package com.creativedesignproject.kumoh_board_backend.board.domain.entity;
 
 import java.util.ArrayList;
 import java.util.List;
