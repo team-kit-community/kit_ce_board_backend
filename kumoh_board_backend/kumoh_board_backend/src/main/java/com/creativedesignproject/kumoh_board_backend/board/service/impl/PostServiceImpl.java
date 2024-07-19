@@ -29,8 +29,8 @@ import com.creativedesignproject.kumoh_board_backend.category.domain.Category;
 import com.creativedesignproject.kumoh_board_backend.category.repository.CategoryRepository;
 import com.creativedesignproject.kumoh_board_backend.common.exception.BadRequestException;
 import com.creativedesignproject.kumoh_board_backend.common.exception.ErrorCode;
-import com.creativedesignproject.kumoh_board_backend.auth.domain.User;
-import com.creativedesignproject.kumoh_board_backend.auth.repository.UserRepository;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.entity.User;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.repository.UserRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;

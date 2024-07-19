@@ -1,4 +1,4 @@
-package com.creativedesignproject.kumoh_board_backend.auth.domain;
+package com.creativedesignproject.kumoh_board_backend.auth.domain.entity;
 
 import java.util.regex.Pattern;
 

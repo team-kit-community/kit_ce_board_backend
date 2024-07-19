@@ -1,9 +1,9 @@
 package com.creativedesignproject.kumoh_board_backend.auth.dto.response;
 
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class SignInResponseDto{
     private String token;
     private int expirationTime; // 토큰 만료시간

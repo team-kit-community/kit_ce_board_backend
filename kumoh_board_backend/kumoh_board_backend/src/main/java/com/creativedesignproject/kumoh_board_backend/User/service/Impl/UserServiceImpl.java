@@ -3,8 +3,8 @@ package com.creativedesignproject.kumoh_board_backend.user.service.impl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.creativedesignproject.kumoh_board_backend.auth.domain.User;
-import com.creativedesignproject.kumoh_board_backend.auth.repository.UserRepository;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.entity.User;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.repository.UserRepository;
 import com.creativedesignproject.kumoh_board_backend.common.exception.BadRequestException;
 import com.creativedesignproject.kumoh_board_backend.common.exception.ErrorCode;
 import com.creativedesignproject.kumoh_board_backend.user.dto.response.GetSignInUserResponseDto;

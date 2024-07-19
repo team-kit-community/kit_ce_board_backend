@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.creativedesignproject.kumoh_board_backend.auth.domain.User;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.entity.User;
 import com.creativedesignproject.kumoh_board_backend.category.domain.Category;
 import com.creativedesignproject.kumoh_board_backend.common.baseentity.BaseEntity;
 

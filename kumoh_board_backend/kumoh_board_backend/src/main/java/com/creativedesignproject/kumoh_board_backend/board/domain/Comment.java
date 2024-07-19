@@ -3,7 +3,7 @@ package com.creativedesignproject.kumoh_board_backend.board.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.creativedesignproject.kumoh_board_backend.auth.domain.User;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.entity.User;
 import com.creativedesignproject.kumoh_board_backend.common.baseentity.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
