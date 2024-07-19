@@ -3,36 +3,37 @@ package com.creativedesignproject.kumoh_board_backend.board.service.impl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.creativedesignproject.kumoh_board_backend.board.domain.Comment;
-import com.creativedesignproject.kumoh_board_backend.board.domain.Favorite;
-import com.creativedesignproject.kumoh_board_backend.board.domain.Image;
-import com.creativedesignproject.kumoh_board_backend.board.domain.Post;
-import com.creativedesignproject.kumoh_board_backend.board.domain.SubComment;
+import com.creativedesignproject.kumoh_board_backend.board.domain.entity.Comment;
+import com.creativedesignproject.kumoh_board_backend.board.domain.entity.Favorite;
+import com.creativedesignproject.kumoh_board_backend.board.domain.entity.Image;
+import com.creativedesignproject.kumoh_board_backend.board.domain.entity.Post;
+import com.creativedesignproject.kumoh_board_backend.board.domain.entity.SubComment;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.CommentRepository;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.FavoriteRepository;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.PostRepository;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.SubCommentRepository;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.CategoryPostDto;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.CommentDto;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.FavoriteListDto;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.ImageDto;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.PostDto;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.SubCommentDto;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.UserDto;
 import com.creativedesignproject.kumoh_board_backend.board.dto.request.PatchBoardRequestDto;
 import com.creativedesignproject.kumoh_board_backend.board.dto.request.PostBoardRequestDto;
 import com.creativedesignproject.kumoh_board_backend.board.dto.request.PostCommentRequestDto;
 import com.creativedesignproject.kumoh_board_backend.board.dto.request.PostSubCommentRequestDto;
 import com.creativedesignproject.kumoh_board_backend.board.dto.response.PutFavoriteResponseDto;
-import com.creativedesignproject.kumoh_board_backend.board.repository.CommentRepository;
-import com.creativedesignproject.kumoh_board_backend.board.repository.FavoriteRepository;
-import com.creativedesignproject.kumoh_board_backend.board.repository.PostRepository;
-import com.creativedesignproject.kumoh_board_backend.board.repository.SubCommentRepository;
-import com.creativedesignproject.kumoh_board_backend.board.repository.query.CategoryPostDto;
-import com.creativedesignproject.kumoh_board_backend.board.repository.query.CommentDto;
-import com.creativedesignproject.kumoh_board_backend.board.repository.query.FavoriteListDto;
-import com.creativedesignproject.kumoh_board_backend.board.repository.query.ImageDto;
-import com.creativedesignproject.kumoh_board_backend.board.repository.query.PostDto;
-import com.creativedesignproject.kumoh_board_backend.board.repository.query.SubCommentDto;
-import com.creativedesignproject.kumoh_board_backend.board.repository.query.UserDto;
 import com.creativedesignproject.kumoh_board_backend.board.service.PostService;
-import com.creativedesignproject.kumoh_board_backend.category.domain.Category;
-import com.creativedesignproject.kumoh_board_backend.category.repository.CategoryRepository;
+import com.creativedesignproject.kumoh_board_backend.category.domain.entity.Category;
+import com.creativedesignproject.kumoh_board_backend.category.domain.repository.CategoryRepository;
 import com.creativedesignproject.kumoh_board_backend.common.exception.BadRequestException;
 import com.creativedesignproject.kumoh_board_backend.common.exception.ErrorCode;
-import com.creativedesignproject.kumoh_board_backend.auth.domain.User;
-import com.creativedesignproject.kumoh_board_backend.auth.repository.UserRepository;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.entity.User;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -55,11 +56,8 @@ public class PostServiceImpl implements PostService{
     public PostDto getPost(Long category_id, Long post_number) {
         boolean isExistedCategory = categoryRepository.existsByCategoryId(category_id);
         if(!isExistedCategory) throw new BadRequestException(ErrorCode.NOT_EXISTED_CATEGORY);
-
-        boolean isExistedBoard = postRepository.existsByCategoryIdAndPostNumber(category_id, post_number);
-        if(!isExistedBoard) throw new BadRequestException(ErrorCode.NOT_EXISTED_POST);
         
-        Post post = postRepository.selectBoardWithImage(category_id, post_number);
+        Post post = postRepository.selectBoardWithImage(category_id, post_number).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTED_POST));
         post.increaseViewCount(); // 따로 저장안해도 저장 됨 -> 영속성 컨텍스트 때문
         
         PostDto postDto = PostDto.builder()
@@ -81,8 +79,7 @@ public class PostServiceImpl implements PostService{
         User user = userRepository.findByUserId(userId);
         if(user == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_USER);
 
-        Category category = categoryRepository.findById(category_id);
-        if(category == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_CATEGORY);
+        Category category = categoryRepository.findById(category_id).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTED_CATEGORY));
 
         Post post = Post.builder()
                 .title(dto.getTitle())
@@ -115,11 +112,9 @@ public class PostServiceImpl implements PostService{
         User user = userRepository.findByUserId(userId);
         if(user == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_USER);
 
-        Category category = categoryRepository.findById(category_id);
-        if(category == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_CATEGORY);
+        categoryRepository.findById(category_id).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTED_CATEGORY));
 
-        Post post = postRepository.findByCategoryIdAndPostNumber(category_id, post_number);
-        if(post == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_POST);
+        Post post = postRepository.findByCategoryIdAndPostNumber(category_id, post_number).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTED_POST));
 
         boolean isOwner = postRepository.isOwner(category_id, post_number, userId);
         if (!isOwner) throw new BadRequestException(ErrorCode.NO_PERMISSION);
@@ -132,7 +127,8 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public List<PostDto> getLatestBoardList(Long category_id) {
-        List<PostDto> postList = postRepository.selectLatestBoardList(category_id);
+        LocalDateTime beforeWeek = LocalDateTime.now().minusDays(7);
+        List<PostDto> postList = postRepository.selectLatestBoardList(category_id, beforeWeek);
         return postList;
     }
 
@@ -170,11 +166,11 @@ public class PostServiceImpl implements PostService{
         User user = userRepository.findByUserId(userId);
         if(user == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_USER);
 
-        Post post = postRepository.findById(post_number);
-        if(post == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_POST);
+        Post post = postRepository.findById(post_number).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTED_POST));
 
-        boolean favoriteExists = favoriteRepository.findByBoardNumberAndUserId(user.getId(), post_number);
-        if (!favoriteExists) {
+        Optional<Favorite> favorite = favoriteRepository.findByBoardNumberAndUserId(user.getId(), post_number);
+
+        if (!favorite.isPresent()) {
             Favorite favoriteEntity = Favorite.builder()
                 .user(user)
                 .post(post)
@@ -197,8 +193,7 @@ public class PostServiceImpl implements PostService{
         User user = userRepository.findByUserId(userId);
         if(user == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_USER);
 
-        Post post = postRepository.findById(post_number);
-        if(post == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_POST);
+        Post post = postRepository.findById(post_number).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTED_POST));
 
         Comment comment = Comment.builder()
                 .contents(dto.getContent())
@@ -212,7 +207,7 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public List<CommentDto> getCommentList(Long category_id, Long post_number) {
-        List<Comment> comments = commentRepository.selectCommentsByPostNumber(post_number);
+        List<Comment> comments = commentRepository.findByPostId(post_number);
         List<CommentDto> commentList = new ArrayList<>();
         
         for (Comment comment : comments) {
@@ -261,11 +256,9 @@ public class PostServiceImpl implements PostService{
         User user = userRepository.findByUserId(userId);
         if(user == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_USER);
 
-        Post post = postRepository.findById(post_number);
-        if(post == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_POST);
+        postRepository.findById(post_number).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTED_POST));
 
-        Comment parentComment = commentRepository.findById(dto.getParent_comment_id());
-        if(parentComment == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_COMMENT);
+        Comment parentComment = commentRepository.findById(dto.getParent_comment_id()).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTED_COMMENT));
 
         SubComment subCommentEntity = SubComment.builder()
             .content(dto.getContent())

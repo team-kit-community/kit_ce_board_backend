@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.creativedesignproject.kumoh_board_backend.category.domain.Category;
+import com.creativedesignproject.kumoh_board_backend.category.domain.entity.Category;
+import com.creativedesignproject.kumoh_board_backend.category.domain.repository.CategoryRepository;
 import com.creativedesignproject.kumoh_board_backend.category.dto.request.CategoryDto;
 import com.creativedesignproject.kumoh_board_backend.category.dto.request.UpdateCategoryRequestDto;
-import com.creativedesignproject.kumoh_board_backend.category.repository.CategoryRepository;
 import com.creativedesignproject.kumoh_board_backend.category.service.CategoryService;
 import com.creativedesignproject.kumoh_board_backend.common.exception.BadRequestException;
 import com.creativedesignproject.kumoh_board_backend.common.exception.ErrorCode;
@@ -34,9 +34,8 @@ public class CategoryServiceImpl implements CategoryService{
     @Transactional // 기본 값은 write
     @Override // 값 바꾸기
     public void updateCategory(Long category_id, UpdateCategoryRequestDto dto) {
-        Category category = categoryRepository.findById(category_id);
-        if(category == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_CATEGORY);
-
+        Category category = categoryRepository.findById(category_id).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTED_CATEGORY));
+        
         boolean isExistedCategory = categoryRepository.existsByName(dto.getName());
         if(isExistedCategory) throw new BadRequestException(ErrorCode.DUPLICATED_CATEGORY_NAME);
 
@@ -46,8 +45,7 @@ public class CategoryServiceImpl implements CategoryService{
     @Transactional // 기본 값은 write
     @Override // 값 바꾸기
     public void deleteCategoryName(Long category_id) {
-        Category category = categoryRepository.findById(category_id);
-        if(category == null) throw new BadRequestException(ErrorCode.NOT_EXISTED_CATEGORY);
+        Category category = categoryRepository.findById(category_id).orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTED_CATEGORY));
 
         categoryRepository.delete(category);
     }

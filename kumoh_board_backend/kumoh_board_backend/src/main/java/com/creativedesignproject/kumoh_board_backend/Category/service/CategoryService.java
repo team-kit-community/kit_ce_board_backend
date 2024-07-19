@@ -1,6 +1,6 @@
 package com.creativedesignproject.kumoh_board_backend.category.service;
 
-import com.creativedesignproject.kumoh_board_backend.category.domain.Category;
+import com.creativedesignproject.kumoh_board_backend.category.domain.entity.Category;
 import com.creativedesignproject.kumoh_board_backend.category.dto.request.CategoryDto;
 import com.creativedesignproject.kumoh_board_backend.category.dto.request.UpdateCategoryRequestDto;
 

@@ -2,7 +2,7 @@ package com.creativedesignproject.kumoh_board_backend.auth.infrastructure;
 
 import org.springframework.stereotype.Component;
 
-import com.creativedesignproject.kumoh_board_backend.auth.domain.VerificationCode;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.entity.VerificationCode;
 import com.creativedesignproject.kumoh_board_backend.auth.service.VerificationCodeProvider;
 
 import java.util.Random;

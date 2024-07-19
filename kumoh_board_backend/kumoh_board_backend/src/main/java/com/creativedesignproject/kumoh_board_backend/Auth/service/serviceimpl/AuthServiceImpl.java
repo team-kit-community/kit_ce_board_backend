@@ -7,9 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.creativedesignproject.kumoh_board_backend.common.exception.BadRequestException;
 import com.creativedesignproject.kumoh_board_backend.common.exception.ErrorCode;
-import com.creativedesignproject.kumoh_board_backend.auth.domain.Certification;
-import com.creativedesignproject.kumoh_board_backend.auth.domain.User;
-import com.creativedesignproject.kumoh_board_backend.auth.domain.VerificationCode;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.entity.Certification;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.entity.User;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.entity.VerificationCode;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.repository.CertificationRepository;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.repository.UserRepository;
 import com.creativedesignproject.kumoh_board_backend.auth.dto.request.ChangeNicknameRequestDto;
 import com.creativedesignproject.kumoh_board_backend.auth.dto.request.ChangePasswordRequestDto;
 import com.creativedesignproject.kumoh_board_backend.auth.dto.request.EmailCertificationRequestDto;
@@ -18,8 +20,6 @@ import com.creativedesignproject.kumoh_board_backend.auth.dto.request.SignUpRequ
 import com.creativedesignproject.kumoh_board_backend.auth.dto.request.UserIdCheckRequestDto;
 import com.creativedesignproject.kumoh_board_backend.auth.dto.response.SignInResponseDto;
 import com.creativedesignproject.kumoh_board_backend.auth.provider.JwtProvider;
-import com.creativedesignproject.kumoh_board_backend.auth.repository.CertificationRepository;
-import com.creativedesignproject.kumoh_board_backend.auth.repository.UserRepository;
 import com.creativedesignproject.kumoh_board_backend.auth.service.AuthService;
 import com.creativedesignproject.kumoh_board_backend.auth.service.MailClient;
 import com.creativedesignproject.kumoh_board_backend.auth.service.VerificationCodeProvider;
@@ -47,10 +47,8 @@ public class AuthServiceImpl implements AuthService{
 
     private Certification createCode(String email) {
         VerificationCode verificationCode = verificationCodeProvider.provide();
-        User user = userRepository.findByUserEmail(email);
-        if (user != null)
-            throw new BadRequestException(ErrorCode.EMAIL_DUPLICATED);
-        
+        userRepository.findByUserEmail(email).ifPresent(user -> { throw new BadRequestException(ErrorCode.EMAIL_DUPLICATED); });
+
         Certification certification = Certification.builder()
                 .email(email)
                 .verificationCode(verificationCode)

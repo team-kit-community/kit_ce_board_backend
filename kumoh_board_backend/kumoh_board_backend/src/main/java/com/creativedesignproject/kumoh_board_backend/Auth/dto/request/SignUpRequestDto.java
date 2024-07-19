@@ -18,7 +18,7 @@ public class SignUpRequestDto {
     private String nickName;
 
     @NotBlank(message = "이메일은 필수 입력 값입니다.")
-    @Email
+    @Email(message = "이메일 형식이 올바르지 않습니다.")
     @Pattern(regexp = "^[a-zA-Z0-9]+@kumoh\\.ac\\.kr$", message = "이메일 형식이 올바르지 않습니다.")
     private String email;
 
