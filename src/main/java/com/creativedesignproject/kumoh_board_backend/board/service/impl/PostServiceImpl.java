@@ -9,9 +9,9 @@ import com.creativedesignproject.kumoh_board_backend.board.domain.entity.Image;
 import com.creativedesignproject.kumoh_board_backend.board.domain.entity.Post;
 import com.creativedesignproject.kumoh_board_backend.board.domain.entity.SubComment;
 import com.creativedesignproject.kumoh_board_backend.board.domain.repository.post.PostRepository;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.CommentRepository;
+import com.creativedesignproject.kumoh_board_backend.board.domain.repository.FavoriteRepository;
 import com.creativedesignproject.kumoh_board_backend.board.domain.repository.SubCommentRepository;
-import com.creativedesignproject.kumoh_board_backend.board.domain.repository.comment.CommentRepository;
-import com.creativedesignproject.kumoh_board_backend.board.domain.repository.favorite.FavoriteRepository;
 import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.CategoryPostDto;
 import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.CommentDto;
 import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.FavoriteListDto;
@@ -30,7 +30,7 @@ import com.creativedesignproject.kumoh_board_backend.category.domain.repository.
 import com.creativedesignproject.kumoh_board_backend.common.exception.BadRequestException;
 import com.creativedesignproject.kumoh_board_backend.common.exception.ErrorCode;
 import com.creativedesignproject.kumoh_board_backend.auth.domain.entity.User;
-import com.creativedesignproject.kumoh_board_backend.auth.domain.repository.user.UserRepository;
+import com.creativedesignproject.kumoh_board_backend.auth.domain.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
