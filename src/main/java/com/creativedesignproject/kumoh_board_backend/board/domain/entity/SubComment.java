@@ -23,10 +23,11 @@ public class SubComment extends BaseEntity {
     @Column(name = "subcomment_id")
     private Long id;
 
+    @Column(nullable = false)
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id")
+    @JoinColumn(name = "comment_id", nullable = false)
     private Comment parentComment;
 
     @Builder

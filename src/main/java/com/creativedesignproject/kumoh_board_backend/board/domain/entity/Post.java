@@ -37,21 +37,21 @@ public class Post extends BaseEntity{
     @Column(name = "contents", nullable = false)
     private String contents;
     
-    @Column(name = "favorite_count")
+    @Column(name = "favorite_count", nullable = false)
     private int favorite_count = 0;
     
-    @Column(name = "comment_count")
+    @Column(name = "comment_count", nullable = false)
     private int comment_count = 0;
     
-    @Column(name = "view_count")
+    @Column(name = "view_count", nullable = false)
     private int view_count = 0;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)

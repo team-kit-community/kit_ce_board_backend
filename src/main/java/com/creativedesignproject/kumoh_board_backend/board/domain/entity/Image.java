@@ -23,10 +23,11 @@ public class Image extends BaseTimeEntity {
     @Column(name = "image_id")
     private Long id;
     
+    @Column(nullable = false)
     private String url;
 
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id", nullable = false)
     @JsonIgnore
     private Post post;
 
