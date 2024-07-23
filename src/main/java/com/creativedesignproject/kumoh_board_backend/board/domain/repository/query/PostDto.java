@@ -28,5 +28,6 @@ public class PostDto {
         this.userDto = userDto;
         this.categoryPostDto = categoryPostDto;
         this.updatedDate = updatedDate;
+        this.imageDto = imageDto;
     }
 }

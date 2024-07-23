@@ -13,9 +13,6 @@ import com.creativedesignproject.kumoh_board_backend.board.domain.entity.Post;
 import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.CategoryPostDto;
 import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.ImageDto;
 import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.PostDto;
-import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.QCategoryPostDto;
-import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.QImageDto;
-import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.QUserDto;
 import com.creativedesignproject.kumoh_board_backend.board.domain.repository.query.UserDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
@@ -59,11 +56,11 @@ public class PostRepositoryImpl implements QuerydslPostRepository {
                     post.favorite_count,
                     post.comment_count,
                     post.view_count,
-                    Projections.constructor(QUserDto.class, post.user.nickname, post.user.profile_image),
-                    Projections.constructor(QCategoryPostDto.class, post.category.name, Expressions.constant((String)null)),
+                    Projections.constructor(UserDto.class, post.user.nickname, post.user.profile_image),
+                    Projections.constructor(CategoryPostDto.class, post.category.name, Expressions.constant(null)),
                     post.updatedDate,
                     Projections.list(
-                        Projections.constructor(QImageDto.class, image.url)
+                        Projections.constructor(ImageDto.class, image.url)
                     )
             ))
             .from(post)
@@ -85,8 +82,8 @@ public class PostRepositoryImpl implements QuerydslPostRepository {
                 post.favorite_count,
                 post.comment_count,
                 post.view_count,
-                Projections.constructor(QUserDto.class, post.user.nickname, post.user.profile_image),
-                Projections.constructor(QCategoryPostDto.class, post.category.name, Expressions.constant((String)null)),
+                Projections.constructor(UserDto.class, post.user.nickname, post.user.profile_image),
+                Projections.constructor(CategoryPostDto.class, post.category.name, Expressions.constant(null)),
                 post.updatedDate,
                 Projections.constructor(ImageDto.class, image.url)
             ))
@@ -110,7 +107,7 @@ public class PostRepositoryImpl implements QuerydslPostRepository {
                 post.comment_count,
                 post.view_count,
                 Projections.constructor(UserDto.class, post.user.nickname, post.user.profile_image),
-                Projections.constructor(CategoryPostDto.class, post.category.name, Expressions.constant((String)null)),
+                Projections.constructor(CategoryPostDto.class, post.category.name, Expressions.constant(null)),
                 post.updatedDate,
                 Projections.constructor(ImageDto.class, image.url)
             ))
@@ -140,8 +137,8 @@ public class PostRepositoryImpl implements QuerydslPostRepository {
                 post.favorite_count,
                 post.comment_count,
                 post.view_count,
-                Projections.constructor(QUserDto.class, post.user.nickname, post.user.profile_image),
-                Projections.constructor(QCategoryPostDto.class, post.category.name, Expressions.constant((String)null)),
+                Projections.constructor(UserDto.class, post.user.nickname, post.user.profile_image),
+                Projections.constructor(CategoryPostDto.class, post.category.name, Expressions.constant(null)),
                 post.updatedDate,
                 Projections.constructor(ImageDto.class, image.url)
             ))
