@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService{
     private final JwtProvider jwtProvider;
     private final MailClient mailClient;
     private final VerificationCodeProvider verificationCodeProvider;
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
